@@ -215,6 +215,7 @@ svg { display: block; flex: none; }
 .setup .sk { display: block; font-size: 13px; font-weight: 800; letter-spacing: .12em; color: var(--muted); }
 .setup .sv { display: block; font-size: clamp(26px, 5vh, 40px); font-weight: 800; color: var(--accent); line-height: 1.12; }
 .setup .sv.sm { font-size: clamp(20px, 3.4vh, 28px); }
+.card.dense .setup div { padding: clamp(8px, 1.3vh, 12px) 8px; }
 
 /* ---------- Next + controls ---------- */
 .next {
@@ -297,6 +298,74 @@ svg { display: block; flex: none; }
 .keys button:active { filter: brightness(1.35); }
 .keys button.blank { visibility: hidden; }
 
+/* ---------- Machine illustrations ---------- */
+.art { color: var(--accent); }
+.art svg { display: block; width: 100%; height: 100%; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.art .m { stroke: #5B6574; stroke-width: 4.5; }
+.art .m2 { stroke: #8A94A3; stroke-width: 6; }
+.art .pad { stroke: #3B4452; stroke-width: 11; }
+.art .mf { fill: #3B4452; }
+.art .p { stroke: currentColor; stroke-width: 9; }
+.art .hd { fill: currentColor; }
+.art .ar { stroke: #F5F7FA; stroke-width: 3.5; }
+.exhead { display: flex; align-items: center; gap: 14px; width: 100%; }
+.exinfo { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; }
+.exinfo .lbl { font-size: clamp(24px, min(7.2vw, 4.8vh), 40px); }
+.exinfo .lbl.long { font-size: clamp(21px, min(6.2vw, 4.1vh), 34px); }
+.thumb, .art.mini, .art.mid { position: relative; flex: none; background: var(--surface2); }
+.thumb { width: clamp(58px, 10vh, 88px); height: clamp(58px, 10vh, 88px); border-radius: 18px; padding: 4px; }
+.art.mini { width: clamp(48px, 7.5vh, 68px); height: clamp(48px, 7.5vh, 68px); border-radius: 16px; padding: 3px; }
+.art.mid { width: clamp(56px, 9vh, 84px); height: clamp(56px, 9vh, 84px); border-radius: 18px; padding: 4px; }
+.thumb::after, .art.mini::after, .art.mid::after {
+  content: 'i'; position: absolute; right: -5px; bottom: -5px; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--text); color: var(--bg); font: italic 700 15px/22px Georgia, serif; text-align: center;
+}
+
+/* How-to (large illustration + tips) */
+.howto { z-index: 8; align-items: center; justify-content: center; text-align: center; gap: clamp(10px, 2vh, 18px); }
+.art.big { width: min(64vw, 34vh, 280px); height: min(64vw, 34vh, 280px); border-radius: 28px; background: var(--surface); padding: 10px; }
+.htitle { font-size: clamp(26px, 4.4vh, 36px); font-weight: 800; letter-spacing: .02em; line-height: 1.1; }
+.tips { list-style: none; counter-reset: t; display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 420px; text-align: left; }
+.tips li { counter-increment: t; display: flex; gap: 12px; align-items: flex-start; font-size: clamp(16px, 2.5vh, 20px); font-weight: 700; line-height: 1.3; }
+.tips li::before { content: counter(t); flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--bg); font-size: 16px; font-weight: 800; line-height: 30px; text-align: center; }
+.howto .btn { flex: none; width: 100%; max-width: 420px; }
+
+/* Sound settings */
+.iconbtn { flex: none; width: 48px; height: 48px; border-radius: 24px; background: var(--surface2); font-size: 20px; }
+.sound { z-index: 8; gap: clamp(8px, 1.4vh, 12px); }
+.srow { display: flex; gap: 10px; }
+.sgrp { display: flex; flex-direction: column; gap: 6px; flex: 2 1 0; min-width: 0; }
+.sgrp.wide { flex: 3 1 0; }
+.sound .seg3 button { height: 44px; font-size: 14px; letter-spacing: .02em; }
+.sound .seg3.mini { padding: 3px; border-radius: 12px; }
+.sound .seg3.mini button { flex: none; height: 34px; padding: 0 10px; font-size: 12px; border-radius: 9px; }
+.vlist {
+  flex: 1 1 auto; min-height: 88px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-y;
+  background: var(--surface); border-radius: 18px; padding: 6px; display: flex; flex-direction: column; gap: 4px;
+}
+.vitem { flex: none; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 12px; border-radius: 12px; text-align: left; }
+.vitem.on { background: var(--surface2); }
+.vn { flex: 1 1 auto; min-width: 0; font-size: 17px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vq { font-size: 11px; font-weight: 800; letter-spacing: .1em; padding: 4px 7px; border-radius: 6px; background: var(--surface2); color: var(--muted); }
+.vq.premium { background: var(--ok); color: #06210F; }
+.vq.enhanced { background: #7CB8FF; color: #04162B; }
+.vr { width: 24px; font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--dim); text-align: right; }
+.vchk { width: 16px; font-weight: 800; color: var(--ok); }
+.vempty { padding: 14px; color: var(--muted); font-size: 15px; }
+.vtip { font-size: 13px; line-height: 1.4; color: var(--muted); }
+.vtip b { color: var(--text); }
+.mhead { display: flex; align-items: center; justify-content: space-between; }
+.mgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.mgrid button { height: 46px; border-radius: 14px; background: var(--surface2); font-size: 14px; font-weight: 800; letter-spacing: .06em; color: var(--muted); }
+.mgrid button.on { background: var(--text); color: var(--bg); }
+.mnote { min-height: 36px; font-size: 13px; line-height: 1.4; color: var(--muted); text-align: center; }
+.mnote b { color: var(--text); }
+
+/* Machine icons on the workout cards */
+.wc-icons { display: flex; gap: 4px; color: var(--c-strength); }
+.wcard.b .wc-icons { color: var(--b); }
+.wc-icons span { width: 30px; height: 30px; }
+
 /* ---------- Alerts ---------- */
 #flash { position: fixed; inset: 0; z-index: 9; pointer-events: none; border: 12px solid var(--accent); opacity: 0; }
 #flash.on { animation: flash 1s ease-out; }
@@ -337,6 +406,13 @@ svg { display: block; flex: none; }
   .setrow, .rest { min-height: 30px; }
   .wbtn { width: 46px; height: 46px; }
 }
+@media (max-height: 740px) { .wc-icons { display: none; } }
+@media (max-height: 720px) { .art.mini { display: none; } }
+@media (max-height: 600px) {
+  .thumb { width: 52px; height: 52px; border-radius: 14px; }
+  .art.mid { display: none; }
+  .vtip { display: none; }
+}
 </style>
 </head>
 <body>
@@ -346,7 +422,7 @@ svg { display: block; flex: none; }
       <div class="wname" id="wName">WORKOUT A</div>
       <div class="wclock"><span id="elapsed">00:00</span> <span class="of" id="planTotal">/ 60:00</span></div>
     </div>
-    <button class="pill" id="voiceBtn" aria-label="Voice on or off">🔊 ON</button>
+    <button class="pill" id="voiceBtn" aria-label="Sound settings">🔊 SOUND</button>
   </header>
 
   <div class="bar" id="bar"></div>
@@ -361,6 +437,7 @@ svg { display: block; flex: none; }
   <main class="card" id="card">
     <!-- Timed sections: warm-up, mobility, cardio, cool-down -->
     <div class="v" id="vTimed">
+      <button class="art mini" id="tArt" hidden aria-label="How to use the bike"></button>
       <div class="k" id="tMeta">0–2 MIN</div>
       <div class="lbl" id="tLabel">EASY PACE</div>
       <div class="k" id="tHrLabel" hidden>TARGET HR</div>
@@ -380,8 +457,13 @@ svg { display: block; flex: none; }
     <!-- Strength -->
     <div class="v" id="vStr" hidden>
       <div class="k"><span id="sIdx">EXERCISE 1 OF 6</span> · <span class="pace" id="sPace">ON PACE</span></div>
-      <div class="lbl" id="sName">LEG PRESS</div>
-      <div class="note" id="sNote" hidden></div>
+      <div class="exhead">
+        <button class="art thumb" id="sArt" aria-label="How to use this machine"></button>
+        <div class="exinfo">
+          <div class="lbl" id="sName">LEG PRESS</div>
+          <div class="note" id="sNote" hidden></div>
+        </div>
+      </div>
       <div class="reps"><span id="sReps">2 × 10–12 REPS</span> <span>· REST 45–60 SEC</span></div>
       <div class="setrow" id="sSetRow"><span class="dots" id="sDots"></span><span id="sSet">SET 1 OF 2</span></div>
       <div class="rest" id="sRest" hidden><div class="restt" id="sRestT">1:00</div><div class="restk" id="sRestK">REST</div></div>
@@ -398,6 +480,7 @@ svg { display: block; flex: none; }
 
     <!-- Before cardio: get the machine ready -->
     <div class="v" id="vReady" hidden>
+      <button class="art mid" id="rArt" aria-label="How to use the bike"></button>
       <div class="k" id="rK">SET UP THE BIKE</div>
       <div class="setup" id="rBoxes"></div>
       <div class="goal" id="rNote"></div>
@@ -443,9 +526,12 @@ svg { display: block; flex: none; }
 
   <!-- Choose workout + focus -->
   <section class="panel chooser" id="chooser" hidden>
-    <div>
-      <div class="wname">WORKOUT COACH · 60 MIN</div>
-      <div class="ctitle">CHOOSE WORKOUT</div>
+    <div class="top">
+      <div>
+        <div class="wname">WORKOUT COACH · 60 MIN</div>
+        <div class="ctitle">CHOOSE WORKOUT</div>
+      </div>
+      <button class="iconbtn" id="chSound" aria-label="Sound settings">🔊</button>
     </div>
     <div class="k">FOCUS</div>
     <div class="seg3" id="focusSeg">
@@ -458,12 +544,14 @@ svg { display: block; flex: none; }
       <div class="wc-top"><span class="wc-letter">A</span><span class="wc-due" id="dueA" hidden>NEXT UP</span></div>
       <div class="wc-name">FULL BODY + BIKE</div>
       <div class="wc-hl" id="hlA"></div>
+      <div class="wc-icons art" id="iconsA"></div>
       <div class="wc-split" id="splitA"></div>
     </button>
     <button class="wcard b" id="cardB" data-w="B">
       <div class="wc-top"><span class="wc-letter">B</span><span class="wc-due" id="dueB" hidden>NEXT UP</span></div>
       <div class="wc-name">FULL BODY + BIKE</div>
       <div class="wc-hl" id="hlB"></div>
+      <div class="wc-icons art" id="iconsB"></div>
       <div class="wc-split" id="splitB"></div>
     </button>
     <div class="clast" id="lastDone"></div>
@@ -484,6 +572,33 @@ svg { display: block; flex: none; }
       <button class="btn" id="padCancel">CANCEL</button>
       <button class="btn primary go" id="padOk">SAVE</button>
     </div>
+  </section>
+
+  <!-- Machine picture + form tips -->
+  <section class="panel howto" id="howto" hidden>
+    <div class="art big" id="hArt"></div>
+    <div class="htitle" id="hName">LEG PRESS</div>
+    <div class="note" id="hNote" hidden></div>
+    <ol class="tips" id="hTips"></ol>
+    <button class="btn primary go" id="hClose">GOT IT</button>
+  </section>
+
+  <!-- Sound: voice coach + music -->
+  <section class="panel sound" id="sound" hidden>
+    <div class="top"><div class="ctitle">SOUND</div><button class="pill" id="soundDone">DONE</button></div>
+    <div class="srow">
+      <div class="sgrp"><div class="k">VOICE COACH</div><div class="seg3" id="voiceSeg"><button data-v="1">ON</button><button data-v="0">OFF</button></div></div>
+      <div class="sgrp wide"><div class="k">SPEED</div><div class="seg3" id="rateSeg"><button data-r="0.9">SLOW</button><button data-r="1">NORMAL</button><button data-r="1.1">FAST</button></div></div>
+    </div>
+    <div class="vlist scroll" id="vList"></div>
+    <div class="vtip">Sounds robotic? On your iPhone open <b>Settings › Accessibility › Spoken Content › Voices › English</b>, download a <b>Premium</b> voice (for example Ava or Zoe), then pick it here.</div>
+    <div class="mhead"><div class="k">MUSIC</div><div class="seg3 mini" id="volSeg"><button data-vol="0.5">LOW</button><button data-vol="1">MED</button><button data-vol="1.6">HIGH</button></div></div>
+    <div class="mgrid" id="musicGrid">
+      <button data-m="off">OFF</button><button data-m="calm">CALM</button><button data-m="lofi">LO-FI</button>
+      <button data-m="energy">ENERGY</button><button data-m="auto">AUTO</button><button data-m="mine">MY MUSIC</button>
+    </div>
+    <div class="mnote" id="musicNote"></div>
+    <input type="file" id="musicFile" accept="audio/*" hidden>
   </section>
 </div>
 <div id="flash"></div>
@@ -514,13 +629,110 @@ svg { display: block; flex: none; }
   const SETS = (balanced, cardio, machines) => ({ balanced, cardio, machines });
   const TIP = '<b>WEIGHT:</b> Finish each set feeling like you could still do 2–3 good reps. <b>GOOD FORM FIRST.</b>';
 
+  /* ---------- Machine illustrations (drawn in code, no image files) ---------- */
+  const ART = (function () {
+    const f = n => Math.round(n * 10) / 10;
+    const ln = (c, x1, y1, x2, y2) => '<path class="' + c + '" d="M' + x1 + ' ' + y1 + 'L' + x2 + ' ' + y2 + '"/>';
+    const pl = (c, pts) => '<polyline class="' + c + '" points="' + pts + '"/>';
+    const pa = (c, d) => '<path class="' + c + '" d="' + d + '"/>';
+    const ci = (c, x, y, r) => '<circle class="' + c + '" cx="' + x + '" cy="' + y + '" r="' + r + '"/>';
+    const head = (x, y) => ci('hd', x, y, 8.5);
+    function tip(x, y, a) {
+      const h = 7, s = 0.6;
+      return 'M' + f(x - h * Math.cos(a - s)) + ' ' + f(y - h * Math.sin(a - s)) + 'L' + x + ' ' + y + 'L' + f(x - h * Math.cos(a + s)) + ' ' + f(y - h * Math.sin(a + s));
+    }
+    const arrow = (x1, y1, x2, y2) => pa('ar', 'M' + x1 + ' ' + y1 + 'L' + x2 + ' ' + y2 + tip(x2, y2, Math.atan2(y2 - y1, x2 - x1)));
+    function carrow(cx, cy, r, a0, a1) {
+      const rad = d => d * Math.PI / 180;
+      const x0 = f(cx + r * Math.cos(rad(a0))), y0 = f(cy + r * Math.sin(rad(a0)));
+      const x1 = f(cx + r * Math.cos(rad(a1))), y1 = f(cy + r * Math.sin(rad(a1)));
+      const cw = a1 > a0 ? 1 : 0;
+      return pa('ar', 'M' + x0 + ' ' + y0 + 'A' + r + ' ' + r + ' 0 0 ' + cw + ' ' + x1 + ' ' + y1 + tip(x1, y1, rad(a1) + (cw ? 1 : -1) * Math.PI / 2));
+    }
+    const floor = ln('m', 8, 110, 112, 110);
+    const svg = body => '<svg viewBox="0 0 120 120" aria-hidden="true">' + body + '</svg>';
+    return {
+      legpress: svg(floor +
+        ln('pad', 22, 98, 34, 54) + ln('pad', 28, 98, 58, 98) + ln('m', 44, 103, 44, 110) +
+        ln('pad', 103, 48, 103, 90) + ln('m', 103, 90, 103, 110) +
+        pl('p', '43,53 52,88') + pl('p', '52,88 76,64 97,76') + pl('p', '45,60 52,78 62,91') + head(39, 41) +
+        arrow(66, 88, 90, 88)),
+      chestpress: svg(floor +
+        ln('pad', 30, 40, 30, 94) + ln('pad', 30, 97, 60, 97) + ln('m', 46, 102, 46, 110) +
+        pa('m', 'M30 26Q70 10 86 40') + ln('m2', 86, 42, 86, 64) +
+        pl('p', '43,48 44,88') + pl('p', '44,88 68,90 70,108') + pl('p', '45,56 64,56 82,54') + head(43, 35) +
+        arrow(94, 76, 112, 76)),
+      latpulldown: svg(
+        ln('m', 14, 10, 106, 10) + ln('m', 106, 10, 106, 110) + ln('m', 8, 110, 112, 110) + ln('m', 60, 10, 60, 24) +
+        ln('m2', 24, 26, 96, 26) + ln('pad', 40, 90, 80, 90) + ln('m', 60, 95, 60, 110) +
+        pl('p', '60,60 60,86') + pl('p', '56,62 40,50 34,30') + pl('p', '64,62 80,50 86,30') +
+        pl('p', '56,86 42,96 42,108') + pl('p', '64,86 78,96 78,108') + head(60, 47) +
+        arrow(18, 40, 18, 62) + arrow(102 - 8, 40, 102 - 8, 62)),
+      seatedrow: svg(floor +
+        ln('m', 106, 30, 106, 110) + ci('m', 106, 66, 4) + ln('m', 57, 67, 102, 66) +
+        ln('pad', 18, 98, 50, 98) + ln('m', 34, 103, 34, 110) + ln('m', 88, 80, 93, 104) +
+        pl('p', '33,52 36,90') + pl('p', '36,90 62,80 85,93') + pl('p', '35,58 22,70 50,68') + ln('m2', 55, 61, 55, 74) + head(31, 40) +
+        arrow(96, 52, 72, 52)),
+      legcurl: svg(floor +
+        ln('pad', 26, 40, 26, 94) + ln('pad', 26, 97, 66, 97) + ln('m', 46, 102, 46, 110) +
+        ln('pad', 56, 77, 76, 77) + ci('mf', 88, 101, 6) +
+        pl('p', '38,48 40,88') + pl('p', '40,88 74,88 84,106') + pl('p', '40,56 48,70 58,77') + head(38, 36) +
+        carrow(74, 88, 30, -10, 38)),
+      shoulderpress: svg(floor +
+        ln('pad', 32, 30, 32, 94) + ln('pad', 32, 97, 60, 97) + ln('m', 46, 102, 46, 110) +
+        pa('m', 'M36 24Q44 6 60 14') + ln('m2', 54, 14, 68, 14) +
+        pl('p', '46,52 47,90') + pl('p', '47,90 70,92 72,108') + pl('p', '48,58 64,46 61,20') + head(45, 40) +
+        arrow(86, 44, 86, 18)),
+      legext: svg(floor +
+        ln('pad', 26, 40, 26, 94) + ln('pad', 26, 97, 66, 97) + ln('m', 46, 102, 46, 110) +
+        ln('m', 74, 92, 97, 82) + ci('mf', 100, 80, 6) +
+        pl('p', '38,48 40,88') + pl('p', '40,88 74,88 97,70') + pl('p', '40,56 46,74 56,90') + head(38, 36) +
+        carrow(74, 88, 24, 70, 18)),
+      pullup: svg(
+        ln('m', 8, 110, 112, 110) + ln('m', 98, 8, 98, 110) + ln('m2', 42, 12, 98, 12) +
+        ln('pad', 40, 92, 78, 92) + ln('m', 78, 92, 98, 100) +
+        pl('p', '52,44 54,72') + pl('p', '54,72 66,86 44,87') + pl('p', '53,50 58,30 62,14') + head(46, 34) +
+        arrow(24, 72, 24, 44)),
+      calfraise: svg(floor +
+        ln('m', 24, 6, 24, 110) + pa('m', 'M24 22L40 32') + ln('pad', 38, 34, 66, 34) +
+        ln('pad', 46, 101, 76, 101) +
+        pl('p', '52,40 53,68') + pl('p', '53,68 54,80 53,88 64,96') + pl('p', '53,44 64,48 66,36') + head(52, 23) +
+        arrow(84, 88, 84, 62)),
+      abs: svg(floor +
+        ln('pad', 28, 44, 30, 94) + ln('pad', 30, 97, 62, 97) + ln('m', 46, 102, 46, 110) +
+        pa('m', 'M30 30Q58 14 76 38') + ln('pad', 76, 42, 78, 60) +
+        pa('p', 'M41 90Q42 66 58 55') + pl('p', '54,60 66,63 71,55') + pl('p', '41,90 66,92 68,108') + head(65, 48) +
+        arrow(88, 22, 104, 42)),
+      bike: svg(
+        ln('m', 22, 110, 106, 110) + ci('m', 88, 88, 15) + ci('m', 56, 90, 4) +
+        pa('m', 'M48 48L54 92L88 88M86 88L84 40L96 37M54 92L42 110M88 103L92 110') +
+        ln('pad', 38, 45, 56, 45) +
+        pl('p', '48,41 62,27') + pl('p', '62,29 74,36 90,38') + pl('p', '48,41 68,58 60,86') + head(69, 19)),
+    };
+  })();
+
+  // Form tips shown when you tap a machine picture
+  const HOWTO = {
+    legpress: ['Feet hip-width, flat on the platform', 'Lower until your knees are about 90°', 'Push through your heels — don’t lock your knees'],
+    chestpress: ['Handles level with the middle of your chest', 'Press forward smoothly, elbows soft at the end', 'Keep your shoulders down and back'],
+    latpulldown: ['Thighs snug under the pad', 'Pull the bar to your upper chest', 'Lead with your elbows — don’t lean far back'],
+    seatedrow: ['Sit tall, chest up, slight bend in the knees', 'Pull the handle to your lower ribs', 'Squeeze your shoulder blades, return slowly'],
+    legcurl: ['Line up your knees with the machine’s pivot', 'Curl your heels down and back', 'Return slowly — don’t let the weight drop'],
+    shoulderpress: ['Handles start at shoulder height', 'Press up without arching your back', 'Lower slowly with control'],
+    legext: ['Knees in line with the pivot, pad just above your ankles', 'Straighten smoothly and pause at the top', 'Lower slowly'],
+    pullup: ['More weight on the stack = more help', 'Knees on the pad, hands a little wider than your shoulders', 'Pull your chest toward the bar, lower slowly'],
+    calfraise: ['Balls of your feet on the edge of the step', 'Rise up high and pause', 'Lower your heels slowly for a full stretch'],
+    abs: ['Start with a light weight', 'Curl your ribs toward your hips — don’t pull with your arms', 'Breathe out as you crunch'],
+    bike: ['Seat at hip height — slight knee bend at the bottom', 'Change resistance gradually', 'Upright posture, relaxed grip'],
+  };
+
   const LIBRARY = {
     /* ---------------- WORKOUT A · FULL BODY + BIKE ---------------- */
     A: {
       name: 'WORKOUT A', type: 'FULL BODY + BIKE', highlights: '6 MACHINES · LEG PRESS, SHOULDER PRESS',
       sections: [
         {
-          id: 'warmup', icon: '🚴', title: 'BIKE WARM-UP', type: 'timed',
+          id: 'warmup', icon: '🚴', title: 'BIKE WARM-UP', type: 'timed', img: 'bike', showArt: true,
           goal: '<b>GOAL:</b> Warm up your legs and prepare your heart.',
           enterSay: 'Bike warm-up. Easy pace.',
           steps: [
@@ -548,22 +760,22 @@ svg { display: block; flex: none; }
           enterSay: 'Mobility complete. Strength training.',
           tip: TIP,
           exercises: [
-            { name: 'LEG PRESS', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg press' },
-            { name: 'CHEST PRESS', reps: '10–12', sets: SETS(2, 1, 3), say: 'Chest press' },
-            { name: 'LAT PULLDOWN', reps: '10–12', sets: SETS(2, 1, 3), say: 'Lat pulldown' },
-            { name: 'SEATED ROW', reps: '10–12', sets: SETS(2, 1, 3), say: 'Seated row' },
-            { name: 'LEG CURL', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg curl' },
-            { name: 'SHOULDER PRESS', reps: '8–10', sets: SETS(2, 1, 3), say: 'Shoulder press' },
+            { name: 'LEG PRESS', img: 'legpress', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg press' },
+            { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 1, 3), say: 'Chest press' },
+            { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '10–12', sets: SETS(2, 1, 3), say: 'Lat pulldown' },
+            { name: 'SEATED ROW', img: 'seatedrow', reps: '10–12', sets: SETS(2, 1, 3), say: 'Seated row' },
+            { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg curl' },
+            { name: 'SHOULDER PRESS', img: 'shoulderpress', reps: '8–10', sets: SETS(2, 1, 3), say: 'Shoulder press' },
           ],
         },
         {
-          id: 'cardio', icon: '❤️', title: 'CARDIO BIKE', type: 'timed', cardio: true, waitForTap: true, manualHr: true, smallTimer: true,
+          id: 'cardio', icon: '❤️', title: 'CARDIO BIKE', type: 'timed', img: 'bike', cardio: true, waitForTap: true, manualHr: true, smallTimer: true,
           hrLabel: 'CURRENT TARGET HR',
           goal: 'BIKE PROGRAM: <b>CARDIO</b> · TARGET HR <b>132</b>',
           ready: {
             k: 'SET UP THE BIKE · {min} MIN',
             boxes: [['PROGRAM', 'CARDIO'], ['TARGET HR', '132']],
-            note: '132 BPM is the <b>peak</b> (minute {peak}). You don’t hold it for the whole ride.',
+            note: '132 BPM is the <b>peak</b> (minute {peak}), not the whole ride.',
             cue: 'START THE BIKE, THEN TAP START CARDIO',
           },
           readySay: 'Strength complete. Set up the bike. Program cardio, target heart rate 132, {min} minutes. Tap start cardio when the bike starts.',
@@ -599,7 +811,7 @@ svg { display: block; flex: none; }
       name: 'WORKOUT B', type: 'FULL BODY + BIKE', highlights: '7 MACHINES · PULL-UP, CALVES, ABS',
       sections: [
         {
-          id: 'warmup', icon: '🚴', title: 'BIKE WARM-UP', type: 'timed',
+          id: 'warmup', icon: '🚴', title: 'BIKE WARM-UP', type: 'timed', img: 'bike', showArt: true,
           goal: '<b>GOAL:</b> Warm up your body and gradually prepare your heart for exercise.',
           enterSay: 'Bike warm-up. Easy pace.',
           steps: [
@@ -627,23 +839,23 @@ svg { display: block; flex: none; }
           enterSay: 'Mobility complete. Strength training.',
           tip: TIP,
           exercises: [
-            { name: 'LEG EXTENSION', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg extension' },
-            { name: 'CHEST PRESS', note: 'INCLINE OR MACHINE', reps: '10–12', sets: SETS(2, 1, 3), say: 'Machine chest press' },
-            { name: 'SEATED ROW', note: 'CABLE OR MACHINE', reps: '10–12', sets: SETS(2, 1, 3), say: 'Seated row' },
-            { name: 'LEG CURL', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg curl' },
-            { name: 'ASSISTED PULL-UP', note: 'NO MACHINE? LAT PULLDOWN', reps: '8–12', sets: SETS(2, 1, 3), say: 'Assisted pull-up or lat pulldown' },
-            { name: 'CALF RAISE MACHINE', reps: '12–15', sets: SETS(2, 1, 2), say: 'Calf raise' },
-            { name: 'ABDOMINAL MACHINE', reps: '10–15', sets: SETS(2, 1, 2), say: 'Abdominal machine' },
+            { name: 'LEG EXTENSION', img: 'legext', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg extension' },
+            { name: 'CHEST PRESS', img: 'chestpress', note: 'INCLINE OR MACHINE', reps: '10–12', sets: SETS(2, 1, 3), say: 'Machine chest press' },
+            { name: 'SEATED ROW', img: 'seatedrow', note: 'CABLE OR MACHINE', reps: '10–12', sets: SETS(2, 1, 3), say: 'Seated row' },
+            { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg curl' },
+            { name: 'ASSISTED PULL-UP', img: 'pullup', note: 'NO MACHINE? LAT PULLDOWN', reps: '8–12', sets: SETS(2, 1, 3), say: 'Assisted pull-up or lat pulldown' },
+            { name: 'CALF RAISE MACHINE', img: 'calfraise', reps: '12–15', sets: SETS(2, 1, 2), say: 'Calf raise' },
+            { name: 'ABDOMINAL MACHINE', img: 'abs', reps: '10–15', sets: SETS(2, 1, 2), say: 'Abdominal machine' },
           ],
         },
         {
-          id: 'cardio', icon: '❤️', title: 'CARDIO BIKE', type: 'timed', cardio: true, waitForTap: true, manualHr: true, smallTimer: true,
+          id: 'cardio', icon: '❤️', title: 'CARDIO BIKE', type: 'timed', img: 'bike', cardio: true, waitForTap: true, manualHr: true, smallTimer: true,
           hrLabel: 'CURRENT TARGET HR',
           goal: 'BIKE PROGRAM: <b>CARDIO</b> · TARGET HR <b>132</b>',
           ready: {
             k: 'SET UP THE BIKE · {min} MIN',
             boxes: [['PROGRAM', 'CARDIO'], ['TARGET HR', '132']],
-            note: 'Adjust resistance <b>gradually</b> to reach each target. 132 BPM is the <b>peak</b> (minute {peak}) — not for the whole ride.',
+            note: 'Change resistance <b>gradually</b>. 132 BPM is the <b>peak</b> (minute {peak}), not the whole ride.',
             cue: 'START THE BIKE, THEN TAP START CARDIO',
           },
           readySay: 'Strength training complete. Cardio. Set up the bike. Program cardio, target heart rate 132, {min} minutes. Tap start cardio when the bike starts.',
@@ -731,6 +943,9 @@ svg { display: block; flex: none; }
   let focus = load('focus', 'balanced');
   if (!FOCI[focus]) focus = 'balanced';
   let history = load('history', []);
+  const sound = Object.assign({ voice: 'auto', rate: 1, music: 'off', vol: 1 }, load('sound', {}));
+  const saveSound = () => store('sound', sound);
+  let soundOpen = false;
 
   function nextUp() { const last = history[history.length - 1]; return last && last.w === 'A' ? 'B' : 'A'; }
 
@@ -821,39 +1036,226 @@ svg { display: block; flex: none; }
 
   /* ---------- Voice (built-in speech synthesis) ---------- */
   const synth = window.speechSynthesis || null;
-  let enVoice = null;
-  function pickVoice() {
+  // Joke/novelty voices that ship with Apple devices — never offered as a coach
+  const NOVELTY = /\b(Albert|Bad News|Bahh|Bells|Boing|Bubbles|Cellos|Deranged|Good News|Hysterical|Jester|Organ|Superstar|Trinoids|Whisper|Wobble|Zarvox|Fred|Junior|Ralph|Kathy|Grandma|Grandpa|Eddy|Flo|Reed|Rocko|Sandy|Shelley)\b/i;
+  const REGIONS = { US: 'US', GB: 'UK', AU: 'AU', IE: 'IE', ZA: 'ZA', IN: 'IN', CA: 'CA', NZ: 'NZ' };
+  const SAMPLE = 'Next exercise: leg press. Nice and controlled.';
+  let voices = [], enVoice = null;
+  function vQuality(v) { const s = v.name + ' ' + v.voiceURI; return /premium/i.test(s) ? 3 : /enhanced|neural|natural/i.test(s) ? 2 : 1; }
+  function vRegion(v) { const m = /^en[-_]([A-Za-z]{2})/.exec(v.lang || ''); return m ? (REGIONS[m[1].toUpperCase()] || m[1].toUpperCase()) : ''; }
+  const vName = v => v.name.replace(/\s*\((Premium|Enhanced|Neural)\)/ig, '').replace(/^Microsoft\s+/, '').replace(/\s+Online.*$/, '');
+  function loadVoices() {
     if (!synth) return;
-    const vs = synth.getVoices() || [];
-    enVoice = vs.find(v => /^en[-_]/i.test(v.lang) && v.localService && v.default) ||
-              vs.find(v => /^en[-_]US/i.test(v.lang) && v.localService) ||
-              vs.find(v => /^en[-_]/i.test(v.lang)) || null;
+    const home = ((navigator.language || 'en-US').split('-')[1] || 'US').toUpperCase();
+    const seen = new Set();
+    voices = (synth.getVoices() || [])
+      .filter(v => /^en([-_]|$)/i.test(v.lang) && !NOVELTY.test(v.name))
+      .filter(v => { const k = v.name + '|' + v.lang; if (seen.has(k)) return false; seen.add(k); return true; })
+      .sort((a, b) => vQuality(b) - vQuality(a) || (b.localService - a.localService) ||
+        (b.lang.toUpperCase().endsWith(home) - a.lang.toUpperCase().endsWith(home)) || a.name.localeCompare(b.name));
+    enVoice = (sound.voice !== 'auto' && voices.find(v => v.voiceURI === sound.voice)) || voices[0] || null;
+    if (soundOpen) renderVoices();
   }
-  if (synth) { pickVoice(); try { synth.addEventListener('voiceschanged', pickVoice); } catch (e) {} }
+  if (synth) { loadVoices(); try { synth.addEventListener('voiceschanged', loadVoices); } catch (e) { synth.onvoiceschanged = loadVoices; } }
   let speakTimer = null;
-  function speak(text) {
-    if (!voiceOn || !synth || !text) return;
+  function speak(text, force) {
+    if ((!voiceOn && !force) || !synth || !text) return;
     clearTimeout(speakTimer);
     const go = () => {
       try {
         const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-US'; u.rate = 1; u.pitch = 1; u.volume = 1;
+        u.lang = enVoice ? enVoice.lang : 'en-US'; u.rate = sound.rate; u.pitch = 1; u.volume = 1;
         if (enVoice) u.voice = enVoice;
+        u.onstart = () => Music.duck(true);
+        u.onend = u.onerror = () => Music.duck(false);
         synth.speak(u);
+        setTimeout(() => { if (!synth.speaking) Music.duck(false); }, 8000);
       } catch (e) {}
     };
     if (synth.speaking || synth.pending) { try { synth.cancel(); } catch (e) {} speakTimer = setTimeout(go, 90); }
     else go();
   }
-  function hush() { clearTimeout(speakTimer); try { synth && synth.cancel(); } catch (e) {} }
+  function hush() { clearTimeout(speakTimer); try { synth && synth.cancel(); } catch (e) {} Music.duck(false); }
 
   let unlocked = false;
   function unlock() {
     audio();
+    Music.prime();
     if (!unlocked && synth) {
       unlocked = true;
       try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); } catch (e) {}
     }
+  }
+
+  /* ---------- Background music (made live with Web Audio — no files, works offline) ---------- */
+  const Music = (function () {
+    let ctx = null, bus = null, duckG = null, noiseBuf = null;
+    let cur = 'off', want = 'off', level = 1, step = 0, nextT = 0, timer = null, switchT = null;
+    let fileEl = null, fileName = '', primed = false;
+    const BASE = 0.34;
+    const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    function init() {
+      ctx = audio(); if (!ctx) return false;
+      if (!bus) {
+        bus = ctx.createGain(); bus.gain.value = 0.0001;
+        duckG = ctx.createGain();
+        const comp = ctx.createDynamicsCompressor();
+        comp.threshold.value = -20; comp.ratio.value = 3;
+        bus.connect(duckG); duckG.connect(comp); comp.connect(ctx.destination);
+        noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+        const d = noiseBuf.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      }
+      return true;
+    }
+    // --- instruments ---
+    function env(g, t, a, v, d) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); }
+    function osc(t, freq, v, dur, type, cutoff, attack) {
+      const o = ctx.createOscillator(), g = ctx.createGain(), a = attack || 0.006;
+      o.type = type || 'sine'; o.frequency.value = freq;
+      let n = o;
+      if (cutoff) { const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = cutoff; o.connect(lp); n = lp; }
+      env(g, t, a, v, dur);
+      n.connect(g); g.connect(bus); o.start(t); o.stop(t + a + dur + 0.05);
+    }
+    function noise(t, v, dur, type, freq, q) {
+      const s = ctx.createBufferSource(), fl = ctx.createBiquadFilter(), g = ctx.createGain();
+      s.buffer = noiseBuf; fl.type = type; fl.frequency.value = freq; if (q) fl.Q.value = q;
+      env(g, t, 0.002, v, dur);
+      s.connect(fl); fl.connect(g); g.connect(bus); s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.05);
+    }
+    function kick(t, v) {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.14);
+      env(g, t, 0.004, v, 0.34); o.connect(g); g.connect(bus); o.start(t); o.stop(t + 0.4);
+    }
+    const hat = (t, v, open) => noise(t, v, open ? 0.2 : 0.04, 'highpass', 7500);
+    const snare = (t, v) => { noise(t, v, 0.16, 'bandpass', 1800, 0.8); osc(t, 190, v * 0.5, 0.08, 'triangle'); };
+    const clap = (t, v) => [0, 0.012, 0.025].forEach(d => noise(t + d, v, 0.09, 'bandpass', 1300, 1.2));
+    const keys = (t, notes, v, dur) => notes.forEach(n => { osc(t, mtof(n), v, dur, 'triangle', 1800); osc(t, mtof(n + 12), v * 0.25, dur * 0.5); });
+    const bass = (t, n, v, dur) => osc(t, mtof(n), v, dur, 'sawtooth', 300);
+    const pluck = (t, n, v) => osc(t, mtof(n), v, 0.22, 'square', 1500);
+    function pad(t, notes, dur, v) {
+      notes.forEach(n => [-7, 7].forEach(det => {
+        const o = ctx.createOscillator(), lp = ctx.createBiquadFilter(), g = ctx.createGain();
+        o.type = 'sawtooth'; o.frequency.value = mtof(n); o.detune.value = det;
+        lp.type = 'lowpass'; lp.frequency.value = 650;
+        g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + dur * 0.35);
+        g.gain.linearRampToValueAtTime(v * 0.7, t + dur * 0.8); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.8);
+        o.connect(lp); lp.connect(g); g.connect(bus); o.start(t); o.stop(t + dur + 0.9);
+      }));
+    }
+    // --- styles: [bass root, chord notes] per bar, played on a 16-step grid ---
+    const STYLES = {
+      calm: { bpm: 60, prog: [[48, [60, 64, 67, 71]], [45, [57, 60, 64, 67]], [41, [57, 60, 64, 65]], [43, [55, 59, 62, 64]]],
+        play(s, t, bar, spb) {
+          const [root, ch] = this.prog[Math.floor(bar / 2) % 4];
+          if (s === 0 && bar % 2 === 0) { pad(t, ch, spb * 32, 0.022); osc(t, mtof(root - 12), 0.09, spb * 30, 'sine', 0, 1.5); }
+          if (s % 4 === 0 && Math.random() < 0.55) osc(t, mtof(ch[Math.floor(Math.random() * ch.length)] + 12), 0.05, 1.6, 'sine');
+        } },
+      lofi: { bpm: 78, swing: 0.3, prog: [[50, [53, 57, 60, 64]], [43, [53, 59, 64]], [48, [52, 55, 59, 62]], [45, [55, 60, 64]]],
+        play(s, t, bar, spb) {
+          const [root, ch] = this.prog[bar % 4];
+          if (s === 0 || s === 10) kick(t, 0.55);
+          if (s === 4 || s === 12) snare(t, 0.2);
+          if (s % 2 === 0) hat(t, rnd(0.04, 0.08));
+          if (s === 0) { keys(t, ch, 0.045, spb * 14); bass(t, root - 12, 0.2, spb * 7); }
+          if (s === 10) bass(t, root - 12, 0.16, spb * 4);
+          if (s === 11) keys(t, ch.slice(-2), 0.03, spb * 4);
+        } },
+      energy: { bpm: 124, prog: [[45, [57, 60, 64]], [41, [57, 60, 65]], [48, [55, 60, 64]], [43, [55, 59, 62]]],
+        play(s, t, bar, spb) {
+          const [root, ch] = this.prog[bar % 4];
+          if (s % 4 === 0) kick(t, 0.75);
+          if (s === 4 || s === 12) clap(t, 0.16);
+          if (s % 4 === 2) { hat(t, 0.07, true); bass(t, root - 12, 0.2, spb * 1.6); }
+          else if (s % 2 === 1) hat(t, 0.03);
+          if (s % 2 === 0) pluck(t, ch[(s / 2) % ch.length] + 12, 0.035);
+          if (s === 0) pad(t, ch, spb * 16, 0.01);
+        } },
+    };
+    function schedule() {
+      const st = STYLES[cur]; if (!st || !ctx) return;
+      const spb = 60 / st.bpm / 4;
+      if (nextT < ctx.currentTime - 0.1) nextT = ctx.currentTime + 0.05;   // woke up late: don't play a burst
+      while (nextT < ctx.currentTime + 0.3) {
+        const s = step % 16, bar = Math.floor(step / 16);
+        st.play(s, nextT + (st.swing && s % 4 === 2 ? spb * st.swing : 0), bar, spb);
+        nextT += spb; step++;
+      }
+    }
+    function playFile() { if (!fileEl) return; fileEl.muted = false; const p = fileEl.play(); if (p && p.catch) p.catch(() => {}); }
+    function start() {
+      const t = ctx.currentTime;
+      bus.gain.cancelScheduledValues(t); bus.gain.setValueAtTime(0.0001, t);
+      bus.gain.linearRampToValueAtTime(BASE * level, t + 1.2);
+      if (cur === 'mine') return playFile();
+      step = 0; nextT = t + 0.06; schedule();
+      timer = setInterval(schedule, 70);
+    }
+    function stop() { clearInterval(timer); timer = null; if (fileEl) fileEl.pause(); }
+    // Fade to a new style ('off' | 'calm' | 'lofi' | 'energy' | 'mine') at volume lvl
+    function set(style, lvl) {
+      if (style === want && lvl === level) return;
+      if (!init()) return;
+      const t = ctx.currentTime;
+      if (style === want) { level = lvl; if (cur !== 'off') bus.gain.setTargetAtTime(BASE * level, t, 0.15); return; }
+      want = style; level = lvl;
+      bus.gain.cancelScheduledValues(t); bus.gain.setValueAtTime(Math.max(bus.gain.value, 0.0001), t); bus.gain.linearRampToValueAtTime(0.0001, t + 0.45);
+      clearTimeout(switchT);
+      switchT = setTimeout(() => { stop(); cur = want; if (cur !== 'off') start(); }, 480);
+    }
+    // Quieter while the coach talks
+    function duck(on) { if (duckG) duckG.gain.setTargetAtTime(on ? 0.3 : 1, ctx.currentTime, on ? 0.05 : 0.35); }
+    // Your own song file
+    function useFile(blob, name) {
+      if (!init()) return;
+      if (!fileEl) {
+        fileEl = new Audio(); fileEl.loop = true; fileEl.setAttribute('playsinline', '');
+        try { ctx.createMediaElementSource(fileEl).connect(bus); } catch (e) {}
+      }
+      if (fileEl.src) URL.revokeObjectURL(fileEl.src);
+      fileEl.src = URL.createObjectURL(blob); fileName = name || 'Your song';
+      if (cur === 'mine') playFile();
+    }
+    // iPhone only lets a page start a song after a tap — do a silent start on the first tap
+    function prime() {
+      if (!fileEl || primed || cur === 'mine') return;
+      primed = true; fileEl.muted = true;
+      const p = fileEl.play();
+      const done = () => { if (cur !== 'mine') fileEl.pause(); fileEl.muted = false; };
+      if (p && p.then) p.then(done, () => { primed = false; fileEl.muted = false; }); else done();
+    }
+    return { set, duck, useFile, prime, hasFile: () => !!fileEl, fileName: () => fileName, get style() { return cur; } };
+  })();
+
+  // Saved song (kept on this phone only)
+  const SongStore = {
+    db() {
+      return new Promise((res, rej) => {
+        const r = indexedDB.open('workoutCoach', 1);
+        r.onupgradeneeded = () => r.result.createObjectStore('files');
+        r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+      });
+    },
+    put(v) { return this.db().then(db => new Promise((res, rej) => { const tx = db.transaction('files', 'readwrite'); tx.objectStore('files').put(v, 'music'); tx.oncomplete = res; tx.onerror = () => rej(tx.error); })); },
+    get() { return this.db().then(db => new Promise((res, rej) => { const q = db.transaction('files').objectStore('files').get('music'); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); })); },
+  };
+  if (window.indexedDB) SongStore.get().then(r => { if (r && r.blob) Music.useFile(r.blob, r.name); }).catch(() => {});
+
+  // Let beeps and voice mix with your own music app when the built-in music is off
+  function setSession() { try { if (navigator.audioSession) navigator.audioSession.type = sound.music === 'off' ? 'ambient' : 'playback'; } catch (e) {} }
+  setSession();
+  const AUTO_STYLE = { warmup: 'lofi', mobility: 'calm', strength: 'lofi', cardio: 'energy', cool: 'calm' };
+  function syncMusic() {
+    let style = 'off';
+    const active = view === 'workout' && (state.status === 'running' || state.status === 'waiting');
+    if (sound.music !== 'off' && (active || soundOpen)) {
+      style = sound.music === 'auto' ? (AUTO_STYLE[(view === 'workout' ? cur() : SECS[0]).id] || 'lofi') : sound.music;
+      if (style === 'mine' && !Music.hasFile()) style = 'off';
+    }
+    Music.set(style, sound.vol);
   }
 
   /* ---------- Visual alert + toast ---------- */
@@ -1007,6 +1409,7 @@ svg { display: block; flex: none; }
     state.lastTick = now;
     if (state.status === 'running' && dt > 0) advance(dt * SPEED, dt < 2);
     render();
+    syncMusic();
     if (isActive() && now - lastSave > 1000) save();
   }
 
@@ -1137,6 +1540,7 @@ svg { display: block; flex: none; }
       const plan = buildPlan(w, focus);
       const str = plan.find(S => S.type === 'strength'), car = plan.find(S => S.cardio);
       setText($('hl' + w), LIBRARY[w].highlights);
+      setHTML($('icons' + w), LIBRARY[w].sections.find(S => S.type === 'strength').exercises.map(e => '<span>' + ART[e.img] + '</span>').join(''));
       setText($('split' + w), 'STRENGTH ' + str.duration / 60 + ' MIN · BIKE ' + car.duration / 60 + ' MIN');
       show($('due' + w), w === due);
       $('card' + w).classList.toggle('due', w === due);
@@ -1233,6 +1637,9 @@ svg { display: block; flex: none; }
     icoReset: $('icoReset'), icoChange: $('icoChange'), resetLbl: $('resetLbl'),
     done: $('done'), doneTotal: $('doneTotal'), donePlan: $('donePlan'),
     chooser: $('chooser'), focusSeg: $('focusSeg'), focusNote: $('focusNote'), lastDone: $('lastDone'),
+    tArt: $('tArt'), sArt: $('sArt'), rArt: $('rArt'),
+    howto: $('howto'), hArt: $('hArt'), hName: $('hName'), hNote: $('hNote'), hTips: $('hTips'),
+    sound: $('sound'), vList: $('vList'), voiceSeg: $('voiceSeg'), rateSeg: $('rateSeg'), volSeg: $('volSeg'), musicGrid: $('musicGrid'), musicNote: $('musicNote'),
     pad: $('pad'), padTitle: $('padTitle'), padSub: $('padSub'), padDisp: $('padDisp'), padVal: $('padVal'), padUnit: $('padUnit'), keyDot: $('keyDot'),
   };
 
@@ -1294,8 +1701,8 @@ svg { display: block; flex: none; }
     // Header + progress
     setText(el.wName, headerName());
     setText(el.elapsed, mmss(state.elapsed));
-    setText(el.voiceBtn, voiceOn ? '🔊 ON' : '🔇 OFF');
-    el.voiceBtn.classList.toggle('off', !voiceOn);
+    setText(el.voiceBtn, (voiceOn ? '🔊' : '🔇') + (sound.music !== 'off' ? ' ♫' : '') + ' SOUND');
+    el.voiceBtn.classList.toggle('off', !voiceOn && sound.music === 'off');
     setText(el.secCount, 'SECTION ' + (state.sec + 1) + ' OF ' + SECS.length);
     SECS.forEach((X, i) => {
       const p = i < state.sec ? 1 : i > state.sec ? 0 : (X.type === 'strength' ? Math.min(1, state.str.elapsed / X.duration) : state.pos / X.duration);
@@ -1341,6 +1748,8 @@ svg { display: block; flex: none; }
 
     if (waiting) {
       const R = S.ready;
+      dense = true;
+      setHTML(el.rArt, ART[S.img] || '');
       setText(el.rK, fill(R.k, S));
       setHTML(el.rBoxes, R.boxes.map(b => '<div><span class="sk">' + b[0] + '</span><span class="sv' + (b[1].length > 10 ? ' sm' : '') + '">' + b[1] + '</span></div>').join(''));
       setHTML(el.rNote, fill(R.note, S));
@@ -1366,6 +1775,8 @@ svg { display: block; flex: none; }
       if (step.sides) sub = stepPos < step.dur / 2 ? 'FIRST SIDE · SWITCH HALFWAY' : 'SECOND SIDE';
       show(el.tSub, !!sub); setText(el.tSub, sub);
       show(el.tChips, !!step.chip);
+      show(el.tArt, !!S.showArt && !step.hr);
+      if (S.showArt) setHTML(el.tArt, ART[S.img] || '');
       chipEls.forEach(c => {
         const ci = +c.dataset.i;
         const cls = ci === i ? 'cur' : ci < i ? 'fin' : '';
@@ -1414,6 +1825,8 @@ svg { display: block; flex: none; }
       else if (s.elapsed < pos * perSet - 10) pace = mss(pos * perSet - s.elapsed) + ' AHEAD';
       setText(el.sPace, pace);
       el.sPace.classList.toggle('behind', behind);
+      dense = true;
+      setHTML(el.sArt, ART[ex.img] || '');
       setText(el.sName, ex.name);
       el.sName.classList.toggle('long', ex.name.length > 14);
       show(el.sNote, !!ex.note); setText(el.sNote, ex.note || '');
@@ -1471,11 +1884,6 @@ svg { display: block; flex: none; }
   el.pauseSq.addEventListener('click', () => { unlock(); if (state.status === 'running') pause(); afterAction(); });
   el.nextBtn.addEventListener('click', () => { unlock(); goNext(); afterAction(); });
   el.prevBtn.addEventListener('click', () => { unlock(); goPrev(); afterAction(); });
-  el.voiceBtn.addEventListener('click', () => {
-    voiceOn = !voiceOn; store('voice', voiceOn); unlock();
-    if (voiceOn) speak('Voice on.'); else hush();
-    render();
-  });
   $('againBtn').addEventListener('click', () => { unlock(); resetWorkout(); showChooser(); });
   el.hrIn.addEventListener('click', () => { unlock(); openPad('hr'); });
 
@@ -1531,7 +1939,7 @@ svg { display: block; flex: none; }
   $('cardB').addEventListener('click', () => { unlock(); chooseWorkout('B'); });
 
   // No scrolling, pinch-zoom or long-press menus
-  document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+  document.addEventListener('touchmove', e => { if (!e.target.closest('.scroll')) e.preventDefault(); }, { passive: false });
   document.addEventListener('gesturestart', e => e.preventDefault());
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('pointerdown', () => { unlock(); keepAwake(); }, true);
@@ -1542,6 +1950,115 @@ svg { display: block; flex: none; }
   });
   window.addEventListener('pagehide', save);
   window.addEventListener('resize', () => { titleFor = ''; });
+
+  /* ---------- Sound settings panel ---------- */
+  const MUSIC_NOTES = {
+    off: 'Playing your own music (Spotify, Apple Music)? Keep this <b>OFF</b> — beeps and voice mix in.',
+    calm: 'Soft, slow background. Made live on your phone — no internet needed.',
+    lofi: 'Relaxed beat for steady work. Gets quieter while the coach talks.',
+    energy: 'Upbeat for effort. Gets quieter while the coach talks.',
+    auto: 'Follows the workout: <b>calm</b> for mobility & cool-down, <b>lo-fi</b> for warm-up & strength, <b>energy</b> for cardio.',
+  };
+  function renderVoices() {
+    const box = el.vList;
+    box.innerHTML = '';
+    if (!synth) { box.innerHTML = '<div class="vempty">Voice isn’t available in this browser.</div>'; return; }
+    if (!voices.length) { box.innerHTML = '<div class="vempty">Loading voices…</div>'; return; }
+    const add = (uri, name, tag, region) => {
+      const b = document.createElement('button');
+      b.className = 'vitem'; b.dataset.uri = uri;
+      const n = document.createElement('span'); n.className = 'vn'; n.textContent = name; b.appendChild(n);
+      if (tag) { const q = document.createElement('span'); q.className = 'vq ' + tag.toLowerCase(); q.textContent = tag; b.appendChild(q); }
+      const r = document.createElement('span'); r.className = 'vr'; r.textContent = region; b.appendChild(r);
+      const c = document.createElement('span'); c.className = 'vchk'; b.appendChild(c);
+      box.appendChild(b);
+    };
+    add('auto', 'Best available · ' + vName(voices[0]), '', '');
+    voices.forEach(v => {
+      const q = vQuality(v);
+      add(v.voiceURI, vName(v), q === 3 ? 'PREMIUM' : q === 2 ? 'ENHANCED' : (v.localService ? '' : 'ONLINE'), vRegion(v));
+    });
+    markVoices();
+  }
+  function markVoices() {
+    [...el.vList.querySelectorAll('.vitem')].forEach(b => {
+      const on = b.dataset.uri === sound.voice;
+      b.classList.toggle('on', on);
+      b.lastChild.textContent = on ? '✓' : '';
+    });
+  }
+  function renderSound() {
+    const mark = (box, attr, val) => [...box.children].forEach(b => b.classList.toggle('on', b.dataset[attr] === String(val)));
+    mark(el.voiceSeg, 'v', voiceOn ? 1 : 0);
+    mark(el.rateSeg, 'r', sound.rate);
+    mark(el.volSeg, 'vol', sound.vol);
+    mark(el.musicGrid, 'm', sound.music);
+    let note = MUSIC_NOTES[sound.music] || '';
+    if (sound.music === 'mine') note = Music.hasFile() ? '♫ <b>' + Music.fileName().replace(/[<>&]/g, '') + '</b> · tap MY MUSIC again to change' : 'Choose a song file saved on your iPhone.';
+    setHTML(el.musicNote, note);
+    markVoices();
+  }
+  function openSound() {
+    soundOpen = true;
+    renderVoices(); renderSound();
+    show(el.sound, true);
+    const on = el.vList.querySelector('.vitem.on'); if (on) on.scrollIntoView({ block: 'center' });
+    syncMusic();
+  }
+  function closeSound() { soundOpen = false; show(el.sound, false); syncMusic(); render(); }
+
+  el.voiceBtn.addEventListener('click', () => { unlock(); openSound(); });
+  $('chSound').addEventListener('click', () => { unlock(); openSound(); });
+  $('soundDone').addEventListener('click', closeSound);
+  el.voiceSeg.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    unlock(); voiceOn = b.dataset.v === '1'; store('voice', voiceOn);
+    if (voiceOn) speak('Voice on.'); else hush();
+    renderSound();
+  });
+  el.rateSeg.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    unlock(); sound.rate = +b.dataset.r; saveSound(); renderSound(); speak(SAMPLE, true);
+  });
+  el.vList.addEventListener('click', e => {
+    const b = e.target.closest('.vitem'); if (!b) return;
+    unlock(); sound.voice = b.dataset.uri; saveSound();
+    enVoice = (sound.voice !== 'auto' && voices.find(v => v.voiceURI === sound.voice)) || voices[0] || null;
+    markVoices(); speak(SAMPLE, true);
+  });
+  el.volSeg.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    unlock(); sound.vol = +b.dataset.vol; saveSound(); renderSound(); syncMusic();
+  });
+  el.musicGrid.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    unlock();
+    const m = b.dataset.m;
+    if (m === 'mine' && (!Music.hasFile() || sound.music === 'mine')) { $('musicFile').click(); if (!Music.hasFile()) return; }
+    sound.music = m; saveSound(); setSession(); renderSound(); syncMusic();
+  });
+  $('musicFile').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!f) return;
+    Music.useFile(f, f.name);
+    if (window.indexedDB) SongStore.put({ blob: f, name: f.name }).catch(() => toast('SONG WILL PLAY THIS TIME ONLY', 2200));
+    sound.music = 'mine'; saveSound(); setSession(); renderSound(); syncMusic();
+  });
+
+  /* ---------- Machine how-to ---------- */
+  function openHowto(img, name, note) {
+    setHTML(el.hArt, ART[img] || '');
+    setText(el.hName, name);
+    show(el.hNote, !!note); setText(el.hNote, note || '');
+    el.hTips.innerHTML = '';
+    (HOWTO[img] || []).forEach(t => { const li = document.createElement('li'); li.textContent = t; el.hTips.appendChild(li); });
+    show(el.howto, true);
+  }
+  el.sArt.addEventListener('click', () => { const ex = curEx(); if (ex) openHowto(ex.img, ex.name, ex.note); });
+  el.tArt.addEventListener('click', () => openHowto('bike', 'EXERCISE BIKE'));
+  el.rArt.addEventListener('click', () => openHowto('bike', 'EXERCISE BIKE'));
+  $('hClose').addEventListener('click', () => show(el.howto, false));
 
   /* ---------- Offline support when hosted (sw.js next to this file) ---------- */
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
@@ -1556,7 +2073,7 @@ svg { display: block; flex: none; }
   setInterval(tick, 200);
 
   // Test hook (used only for checking the flow)
-  window.__workout = { get state() { return state; }, get plan() { return SECS; }, buildPlan: buildPlan };
+  window.__workout = { get state() { return state; }, get plan() { return SECS; }, buildPlan: buildPlan, music: Music, sound: sound };
 })();
 </script>
 </body>

@@ -1,6 +1,6 @@
 // Offline helper for the workout timer. Serves the saved copy instantly,
 // then refreshes it in the background when there is signal.
-const CACHE = 'workout-coach-v2';
+const CACHE = 'workout-coach-v3';
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => Promise.allSettled([c.add('./'), c.add('./index.html')])));
