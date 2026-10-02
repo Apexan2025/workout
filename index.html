@@ -308,6 +308,8 @@ svg { display: block; flex: none; }
 .art .p { stroke: currentColor; stroke-width: 9; }
 .art .hd { fill: currentColor; }
 .art .ar { stroke: #F5F7FA; stroke-width: 3.5; }
+.art .dbh { stroke: #C3CAD4; stroke-width: 3.5; }
+.art .dbp { stroke: #C3CAD4; stroke-width: 5.5; }
 .exhead { display: flex; align-items: center; gap: 14px; width: 100%; }
 .exinfo { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; }
 .exinfo .lbl { font-size: clamp(24px, min(7.2vw, 4.8vh), 40px); }
@@ -315,7 +317,7 @@ svg { display: block; flex: none; }
 .thumb, .art.mini, .art.mid { position: relative; flex: none; background: var(--surface2); }
 .thumb { width: clamp(58px, 10vh, 88px); height: clamp(58px, 10vh, 88px); border-radius: 18px; padding: 4px; }
 .art.mini { width: clamp(48px, 7.5vh, 68px); height: clamp(48px, 7.5vh, 68px); border-radius: 16px; padding: 3px; }
-.art.mid { width: clamp(56px, 9vh, 84px); height: clamp(56px, 9vh, 84px); border-radius: 18px; padding: 4px; }
+.art.mid { width: clamp(50px, 7.4vh, 76px); height: clamp(50px, 7.4vh, 76px); border-radius: 18px; padding: 4px; }
 .thumb::after, .art.mini::after, .art.mid::after {
   content: 'i'; position: absolute; right: -5px; bottom: -5px; width: 22px; height: 22px; border-radius: 50%;
   background: var(--text); color: var(--bg); font: italic 700 15px/22px Georgia, serif; text-align: center;
@@ -650,13 +652,11 @@ svg { display: block; flex: none; }
       return pa('ar', 'M' + x0 + ' ' + y0 + 'A' + r + ' ' + r + ' 0 0 ' + cw + ' ' + x1 + ' ' + y1 + tip(x1, y1, rad(a1) + (cw ? 1 : -1) * Math.PI / 2));
     }
     const floor = ln('m', 8, 110, 112, 110);
+    // dumbbell: handle + two plates (horizontal or vertical)
+    const dbH = (x, y) => ln('dbh', x - 7, y, x + 7, y) + ln('dbp', x - 7, y - 6, x - 7, y + 6) + ln('dbp', x + 7, y - 6, x + 7, y + 6);
+    const dbV = (x, y) => ln('dbh', x, y - 7, x, y + 7) + ln('dbp', x - 6, y - 7, x + 6, y - 7) + ln('dbp', x - 6, y + 7, x + 6, y + 7);
     const svg = body => '<svg viewBox="0 0 120 120" aria-hidden="true">' + body + '</svg>';
     return {
-      legpress: svg(floor +
-        ln('pad', 22, 98, 34, 54) + ln('pad', 28, 98, 58, 98) + ln('m', 44, 103, 44, 110) +
-        ln('pad', 103, 48, 103, 90) + ln('m', 103, 90, 103, 110) +
-        pl('p', '43,53 52,88') + pl('p', '52,88 76,64 97,76') + pl('p', '45,60 52,78 62,91') + head(39, 41) +
-        arrow(66, 88, 90, 88)),
       chestpress: svg(floor +
         ln('pad', 30, 40, 30, 94) + ln('pad', 30, 97, 60, 97) + ln('m', 46, 102, 46, 110) +
         pa('m', 'M30 26Q70 10 86 40') + ln('m2', 86, 42, 86, 64) +
@@ -668,41 +668,37 @@ svg { display: block; flex: none; }
         pl('p', '60,60 60,86') + pl('p', '56,62 40,50 34,30') + pl('p', '64,62 80,50 86,30') +
         pl('p', '56,86 42,96 42,108') + pl('p', '64,86 78,96 78,108') + head(60, 47) +
         arrow(18, 40, 18, 62) + arrow(102 - 8, 40, 102 - 8, 62)),
-      seatedrow: svg(floor +
-        ln('m', 106, 30, 106, 110) + ci('m', 106, 66, 4) + ln('m', 57, 67, 102, 66) +
-        ln('pad', 18, 98, 50, 98) + ln('m', 34, 103, 34, 110) + ln('m', 88, 80, 93, 104) +
-        pl('p', '33,52 36,90') + pl('p', '36,90 62,80 85,93') + pl('p', '35,58 22,70 50,68') + ln('m2', 55, 61, 55, 74) + head(31, 40) +
-        arrow(96, 52, 72, 52)),
       legcurl: svg(floor +
         ln('pad', 26, 40, 26, 94) + ln('pad', 26, 97, 66, 97) + ln('m', 46, 102, 46, 110) +
         ln('pad', 56, 77, 76, 77) + ci('mf', 88, 101, 6) +
         pl('p', '38,48 40,88') + pl('p', '40,88 74,88 84,106') + pl('p', '40,56 48,70 58,77') + head(38, 36) +
         carrow(74, 88, 30, -10, 38)),
-      shoulderpress: svg(floor +
-        ln('pad', 32, 30, 32, 94) + ln('pad', 32, 97, 60, 97) + ln('m', 46, 102, 46, 110) +
-        pa('m', 'M36 24Q44 6 60 14') + ln('m2', 54, 14, 68, 14) +
-        pl('p', '46,52 47,90') + pl('p', '47,90 70,92 72,108') + pl('p', '48,58 64,46 61,20') + head(45, 40) +
-        arrow(86, 44, 86, 18)),
       legext: svg(floor +
         ln('pad', 26, 40, 26, 94) + ln('pad', 26, 97, 66, 97) + ln('m', 46, 102, 46, 110) +
         ln('m', 74, 92, 97, 82) + ci('mf', 100, 80, 6) +
         pl('p', '38,48 40,88') + pl('p', '40,88 74,88 97,70') + pl('p', '40,56 46,74 56,90') + head(38, 36) +
         carrow(74, 88, 24, 70, 18)),
-      pullup: svg(
-        ln('m', 8, 110, 112, 110) + ln('m', 98, 8, 98, 110) + ln('m2', 42, 12, 98, 12) +
-        ln('pad', 40, 92, 78, 92) + ln('m', 78, 92, 98, 100) +
-        pl('p', '52,44 54,72') + pl('p', '54,72 66,86 44,87') + pl('p', '53,50 58,30 62,14') + head(46, 34) +
-        arrow(24, 72, 24, 44)),
-      calfraise: svg(floor +
-        ln('m', 24, 6, 24, 110) + pa('m', 'M24 22L40 32') + ln('pad', 38, 34, 66, 34) +
-        ln('pad', 46, 101, 76, 101) +
-        pl('p', '52,40 53,68') + pl('p', '53,68 54,80 53,88 64,96') + pl('p', '53,44 64,48 66,36') + head(52, 23) +
-        arrow(84, 88, 84, 62)),
       abs: svg(floor +
         ln('pad', 28, 44, 30, 94) + ln('pad', 30, 97, 62, 97) + ln('m', 46, 102, 46, 110) +
         pa('m', 'M30 30Q58 14 76 38') + ln('pad', 76, 42, 78, 60) +
         pa('p', 'M41 90Q42 66 58 55') + pl('p', '54,60 66,63 71,55') + pl('p', '41,90 66,92 68,108') + head(65, 48) +
         arrow(88, 22, 104, 42)),
+      goblet: svg(floor +
+        ln('pad', 14, 88, 34, 88) + ln('m', 18, 93, 18, 110) + ln('m', 30, 93, 30, 110) +
+        pl('p', '40,80 50,50') + pl('p', '40,80 66,80 62,106') + pl('p', '50,54 62,68 64,56') + head(48, 37) +
+        dbV(68, 52) + arrow(96, 100, 96, 72)),
+      dbrow: svg(floor +
+        ln('pad', 14, 82, 44, 82) + ln('m', 18, 87, 18, 110) + ln('m', 40, 87, 40, 110) +
+        pl('p', '42,48 74,58') + pl('p', '42,50 30,76') + pl('p', '74,58 84,82 82,106') + pl('p', '50,52 52,84') + head(32, 41) +
+        dbH(52, 88) + arrow(104, 100, 104, 74)),
+      dbpress: svg(floor +
+        ln('pad', 60, 40, 60, 88) + ln('pad', 36, 92, 84, 92) + ln('m', 60, 97, 60, 110) +
+        pl('p', '60,46 60,82') + pl('p', '55,50 40,46 38,24') + pl('p', '65,50 80,46 82,24') +
+        pl('p', '56,84 44,94 44,108') + pl('p', '64,84 76,94 76,108') + head(60, 33) +
+        dbH(38, 20) + dbH(82, 20) + arrow(16, 52, 16, 26) + arrow(104, 52, 104, 26)),
+      dbcalf: svg(floor +
+        pl('p', '56,30 57,64') + pl('p', '57,64 58,82 57,96 68,108') + pl('p', '57,36 64,52 64,66') + head(55, 18) +
+        dbH(64, 70) + arrow(88, 102, 88, 76)),
       bike: svg(
         ln('m', 22, 110, 106, 110) + ci('m', 88, 88, 15) + ci('m', 56, 90, 4) +
         pa('m', 'M48 48L54 92L88 88M86 88L84 40L96 37M54 92L42 110M88 103L92 110') +
@@ -713,23 +709,22 @@ svg { display: block; flex: none; }
 
   // Form tips shown when you tap a machine picture
   const HOWTO = {
-    legpress: ['Feet hip-width, flat on the platform', 'Lower until your knees are about 90°', 'Push through your heels — don’t lock your knees'],
     chestpress: ['Handles level with the middle of your chest', 'Press forward smoothly, elbows soft at the end', 'Keep your shoulders down and back'],
     latpulldown: ['Thighs snug under the pad', 'Pull the bar to your upper chest', 'Lead with your elbows — don’t lean far back'],
-    seatedrow: ['Sit tall, chest up, slight bend in the knees', 'Pull the handle to your lower ribs', 'Squeeze your shoulder blades, return slowly'],
     legcurl: ['Line up your knees with the machine’s pivot', 'Curl your heels down and back', 'Return slowly — don’t let the weight drop'],
-    shoulderpress: ['Handles start at shoulder height', 'Press up without arching your back', 'Lower slowly with control'],
     legext: ['Knees in line with the pivot, pad just above your ankles', 'Straighten smoothly and pause at the top', 'Lower slowly'],
-    pullup: ['More weight on the stack = more help', 'Knees on the pad, hands a little wider than your shoulders', 'Pull your chest toward the bar, lower slowly'],
-    calfraise: ['Balls of your feet on the edge of the step', 'Rise up high and pause', 'Lower your heels slowly for a full stretch'],
     abs: ['Start with a light weight', 'Curl your ribs toward your hips — don’t pull with your arms', 'Breathe out as you crunch'],
+    goblet: ['Hold one dumbbell upright at your chest', 'Sit back and down — knees follow your toes', 'Stand up through your heels (a bench behind you helps)'],
+    dbrow: ['One hand and knee on a bench, back flat', 'Pull the dumbbell up to your hip', 'Lower slowly — then switch arms'],
+    dbpress: ['Sit on a bench with back support', 'Start at shoulder height, palms forward', 'Press up without arching your back; lower slowly'],
+    dbcalf: ['Stand tall, dumbbells at your sides', 'Rise onto your toes and pause', 'Lower slowly — use one dumbbell and hold a rack if you need balance'],
     bike: ['Seat at hip height — slight knee bend at the bottom', 'Change resistance gradually', 'Upright posture, relaxed grip'],
   };
 
   const LIBRARY = {
     /* ---------------- WORKOUT A · FULL BODY + BIKE ---------------- */
     A: {
-      name: 'WORKOUT A', type: 'FULL BODY + BIKE', highlights: '6 MACHINES · LEG PRESS, SHOULDER PRESS',
+      name: 'WORKOUT A', type: 'FULL BODY + BIKE', highlights: '6 EXERCISES · SQUAT, PRESS, ROW',
       sections: [
         {
           id: 'warmup', icon: '🚴', title: 'BIKE WARM-UP', type: 'timed', img: 'bike', showArt: true,
@@ -738,7 +733,7 @@ svg { display: block; flex: none; }
           steps: [
             { dur: 120, meta: '0–2 MIN', label: 'EASY PACE', say: 'Easy pace.' },
             { dur: 180, meta: '2–5 MIN', label: 'GRADUALLY INCREASE RESISTANCE', short: 'INCREASE RESISTANCE', say: 'Gradually increase resistance.' },
-            { dur: 120, meta: '5–7 MIN', hr: '110–115', say: 'Target heart rate 110 to 115 beats per minute.' },
+            { dur: 120, meta: '5–7 MIN', hr: '110–115', sub: 'EASY · YOU CAN STILL CHAT', say: 'Target heart rate 110 to 115 beats per minute.' },
           ],
         },
         {
@@ -760,12 +755,12 @@ svg { display: block; flex: none; }
           enterSay: 'Mobility complete. Strength training.',
           tip: TIP,
           exercises: [
-            { name: 'LEG PRESS', img: 'legpress', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg press' },
+            { name: 'GOBLET SQUAT', img: 'goblet', note: 'DUMBBELL AT CHEST', reps: '10–12', sets: SETS(2, 1, 3), say: 'Dumbbell goblet squat' },
             { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 1, 3), say: 'Chest press' },
             { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '10–12', sets: SETS(2, 1, 3), say: 'Lat pulldown' },
-            { name: 'SEATED ROW', img: 'seatedrow', reps: '10–12', sets: SETS(2, 1, 3), say: 'Seated row' },
+            { name: 'DUMBBELL ROW', img: 'dbrow', note: 'EACH ARM · ON A BENCH', reps: '10–12', sets: SETS(2, 1, 3), say: 'Dumbbell row' },
             { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg curl' },
-            { name: 'SHOULDER PRESS', img: 'shoulderpress', reps: '8–10', sets: SETS(2, 1, 3), say: 'Shoulder press' },
+            { name: 'DUMBBELL SHOULDER PRESS', img: 'dbpress', note: 'SEATED ON A BENCH', reps: '8–10', sets: SETS(2, 1, 3), say: 'Dumbbell shoulder press' },
           ],
         },
         {
@@ -775,17 +770,17 @@ svg { display: block; flex: none; }
           ready: {
             k: 'SET UP THE BIKE · {min} MIN',
             boxes: [['PROGRAM', 'CARDIO'], ['TARGET HR', '132']],
-            note: '132 BPM is the <b>peak</b> (minute {peak}), not the whole ride.',
+            note: 'Change resistance <b>gradually</b>. 132 is a short <b>peak</b> (minute {peak}). <b>Stop</b> if you feel chest pain or dizziness.',
             cue: 'START THE BIKE, THEN TAP START CARDIO',
           },
           readySay: 'Strength complete. Set up the bike. Program cardio, target heart rate 132, {min} minutes. Tap start cardio when the bike starts.',
           enterSay: 'Cardio. Target 105 to 115 beats per minute.',
           steps: [
-            { hr: '105–115', lo: 105, hi: 115, say: 'Target 105 to 115 beats per minute.' },
-            { hr: '115–120', lo: 115, hi: 120, say: 'Next interval: 115 to 120 beats per minute.' },
-            { hr: '120–125', lo: 120, hi: 125, say: 'Next interval: 120 to 125 beats per minute.' },
-            { hr: '128–132', lo: 128, hi: 132, say: 'Next interval: 128 to 132 beats per minute.' },
-            { hr: '~132', lo: 128, hi: 134, peak: true, say: 'Peak interval. Target 132 beats per minute.' },
+            { hr: '105–115', lo: 105, hi: 115, sub: 'EASY → MODERATE', say: 'Target 105 to 115 beats per minute.' },
+            { hr: '115–120', lo: 115, hi: 120, sub: 'MODERATE', say: 'Next interval: 115 to 120 beats per minute.' },
+            { hr: '120–125', lo: 120, hi: 125, sub: 'MODERATE → MODERATELY HARD', say: 'Next interval: 120 to 125 beats per minute.' },
+            { hr: '128–132', lo: 128, hi: 132, sub: 'BUILD', say: 'Next interval: 128 to 132 beats per minute.' },
+            { hr: '~132', lo: 128, hi: 134, peak: true, sub: 'STAY CONTROLLED', say: 'Peak interval. Target 132 beats per minute.' },
             { label: 'REDUCE RESISTANCE', sub: 'EASY PACE • LET YOUR HR COME DOWN', say: 'Peak complete. Reduce resistance.' },
           ],
         },
@@ -808,7 +803,7 @@ svg { display: block; flex: none; }
 
     /* ---------------- WORKOUT B · FULL BODY + BIKE ---------------- */
     B: {
-      name: 'WORKOUT B', type: 'FULL BODY + BIKE', highlights: '7 MACHINES · PULL-UP, CALVES, ABS',
+      name: 'WORKOUT B', type: 'FULL BODY + BIKE', highlights: '7 EXERCISES · LEGS, CALVES, ABS',
       sections: [
         {
           id: 'warmup', icon: '🚴', title: 'BIKE WARM-UP', type: 'timed', img: 'bike', showArt: true,
@@ -817,7 +812,7 @@ svg { display: block; flex: none; }
           steps: [
             { dur: 120, meta: '0–2 MIN', label: 'EASY PACE', say: 'Easy pace.' },
             { dur: 180, meta: '2–5 MIN', label: 'GRADUALLY INCREASE RESISTANCE', short: 'INCREASE RESISTANCE', say: 'Gradually increase resistance.' },
-            { dur: 120, meta: '5–7 MIN', hr: '110–115', say: 'Target heart rate 110 to 115 beats per minute.' },
+            { dur: 120, meta: '5–7 MIN', hr: '110–115', sub: 'EASY · YOU CAN STILL CHAT', say: 'Target heart rate 110 to 115 beats per minute.' },
           ],
         },
         {
@@ -840,11 +835,11 @@ svg { display: block; flex: none; }
           tip: TIP,
           exercises: [
             { name: 'LEG EXTENSION', img: 'legext', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg extension' },
-            { name: 'CHEST PRESS', img: 'chestpress', note: 'INCLINE OR MACHINE', reps: '10–12', sets: SETS(2, 1, 3), say: 'Machine chest press' },
-            { name: 'SEATED ROW', img: 'seatedrow', note: 'CABLE OR MACHINE', reps: '10–12', sets: SETS(2, 1, 3), say: 'Seated row' },
+            { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 1, 3), say: 'Chest press' },
+            { name: 'DUMBBELL ROW', img: 'dbrow', note: 'EACH ARM · ON A BENCH', reps: '10–12', sets: SETS(2, 1, 3), say: 'Dumbbell row' },
             { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg curl' },
-            { name: 'ASSISTED PULL-UP', img: 'pullup', note: 'NO MACHINE? LAT PULLDOWN', reps: '8–12', sets: SETS(2, 1, 3), say: 'Assisted pull-up or lat pulldown' },
-            { name: 'CALF RAISE MACHINE', img: 'calfraise', reps: '12–15', sets: SETS(2, 1, 2), say: 'Calf raise' },
+            { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '8–12', sets: SETS(2, 1, 3), say: 'Lat pulldown' },
+            { name: 'DUMBBELL CALF RAISE', img: 'dbcalf', note: 'DUMBBELLS AT SIDES', reps: '12–15', sets: SETS(2, 1, 2), say: 'Dumbbell calf raise' },
             { name: 'ABDOMINAL MACHINE', img: 'abs', reps: '10–15', sets: SETS(2, 1, 2), say: 'Abdominal machine' },
           ],
         },
@@ -855,7 +850,7 @@ svg { display: block; flex: none; }
           ready: {
             k: 'SET UP THE BIKE · {min} MIN',
             boxes: [['PROGRAM', 'CARDIO'], ['TARGET HR', '132']],
-            note: 'Change resistance <b>gradually</b>. 132 BPM is the <b>peak</b> (minute {peak}), not the whole ride.',
+            note: 'Change resistance <b>gradually</b>. 132 is a short <b>peak</b> (minute {peak}). <b>Stop</b> if you feel chest pain or dizziness.',
             cue: 'START THE BIKE, THEN TAP START CARDIO',
           },
           readySay: 'Strength training complete. Cardio. Set up the bike. Program cardio, target heart rate 132, {min} minutes. Tap start cardio when the bike starts.',
@@ -1007,7 +1002,7 @@ svg { display: block; flex: none; }
   function audio() {
     try {
       if (!actx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; actx = new AC(); }
-      if (actx.state === 'suspended') actx.resume();
+      if (actx.state !== 'running' && actx.state !== 'closed') { const p = actx.resume(); if (p && p.catch) p.catch(() => {}); }
       return actx;
     } catch (e) { return null; }
   }
@@ -1067,7 +1062,7 @@ svg { display: block; flex: none; }
         u.lang = enVoice ? enVoice.lang : 'en-US'; u.rate = sound.rate; u.pitch = 1; u.volume = 1;
         if (enVoice) u.voice = enVoice;
         u.onstart = () => Music.duck(true);
-        u.onend = u.onerror = () => Music.duck(false);
+        u.onend = u.onerror = () => { Music.duck(false); audio(); };
         synth.speak(u);
         setTimeout(() => { if (!synth.speaking) Music.duck(false); }, 8000);
       } catch (e) {}
@@ -1087,11 +1082,14 @@ svg { display: block; flex: none; }
     }
   }
 
-  /* ---------- Background music (made live with Web Audio — no files, works offline) ---------- */
+  /* ---------- Background music (made in the browser — no files, works offline) ----------
+     Each style is rendered once into a seamless loop and then looped by the audio engine,
+     so it keeps playing even when the phone slows down the page's timers. */
   const Music = (function () {
-    let ctx = null, bus = null, duckG = null, noiseBuf = null;
-    let cur = 'off', want = 'off', level = 1, step = 0, nextT = 0, timer = null, switchT = null;
-    let fileEl = null, fileName = '', primed = false;
+    let ctx = null, bus = null, duckG = null, src = null;
+    let cur = 'off', want = 'off', level = 1, switchT = null, token = 0;
+    let fileEl = null, fileName = '', primed = false, lastFileTry = 0;
+    const loops = {};
     const BASE = 0.34;
     const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
     const rnd = (a, b) => a + Math.random() * (b - a);
@@ -1103,108 +1101,142 @@ svg { display: block; flex: none; }
         const comp = ctx.createDynamicsCompressor();
         comp.threshold.value = -20; comp.ratio.value = 3;
         bus.connect(duckG); duckG.connect(comp); comp.connect(ctx.destination);
-        noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
-        const d = noiseBuf.getChannelData(0);
-        for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
       }
       return true;
     }
-    // --- instruments ---
-    function env(g, t, a, v, d) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); }
-    function osc(t, freq, v, dur, type, cutoff, attack) {
-      const o = ctx.createOscillator(), g = ctx.createGain(), a = attack || 0.006;
-      o.type = type || 'sine'; o.frequency.value = freq;
-      let n = o;
-      if (cutoff) { const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = cutoff; o.connect(lp); n = lp; }
-      env(g, t, a, v, dur);
-      n.connect(g); g.connect(bus); o.start(t); o.stop(t + a + dur + 0.05);
+    // --- instruments, playing into any audio context (used while rendering a loop) ---
+    function kit(c, out) {
+      const nb = c.createBuffer(1, c.sampleRate, c.sampleRate), nd = nb.getChannelData(0);
+      for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+      const env = (g, t, a, v, d) => { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); };
+      function osc(t, freq, v, dur, type, cutoff, attack) {
+        const o = c.createOscillator(), g = c.createGain(), a = attack || 0.006;
+        o.type = type || 'sine'; o.frequency.value = freq;
+        let n = o;
+        if (cutoff) { const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = cutoff; o.connect(lp); n = lp; }
+        env(g, t, a, v, dur);
+        n.connect(g); g.connect(out); o.start(t); o.stop(t + a + dur + 0.05);
+      }
+      function noise(t, v, dur, type, freq, q) {
+        const s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain();
+        s.buffer = nb; fl.type = type; fl.frequency.value = freq; if (q) fl.Q.value = q;
+        env(g, t, 0.002, v, dur);
+        s.connect(fl); fl.connect(g); g.connect(out); s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.05);
+      }
+      function kick(t, v) {
+        const o = c.createOscillator(), g = c.createGain();
+        o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.14);
+        env(g, t, 0.004, v, 0.34); o.connect(g); g.connect(out); o.start(t); o.stop(t + 0.4);
+      }
+      function pad(t, notes, dur, v) {
+        notes.forEach(n => [-7, 7].forEach(det => {
+          const o = c.createOscillator(), lp = c.createBiquadFilter(), g = c.createGain();
+          o.type = 'sawtooth'; o.frequency.value = mtof(n); o.detune.value = det;
+          lp.type = 'lowpass'; lp.frequency.value = 650;
+          g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + dur * 0.35);
+          g.gain.linearRampToValueAtTime(v * 0.7, t + dur * 0.8); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.8);
+          o.connect(lp); lp.connect(g); g.connect(out); o.start(t); o.stop(t + dur + 0.9);
+        }));
+      }
+      return {
+        osc, kick, pad,
+        hat: (t, v, open) => noise(t, v, open ? 0.2 : 0.04, 'highpass', 7500),
+        snare: (t, v) => { noise(t, v, 0.16, 'bandpass', 1800, 0.8); osc(t, 190, v * 0.5, 0.08, 'triangle'); },
+        clap: (t, v) => [0, 0.012, 0.025].forEach(d => noise(t + d, v, 0.09, 'bandpass', 1300, 1.2)),
+        keys: (t, notes, v, dur) => notes.forEach(n => { osc(t, mtof(n), v, dur, 'triangle', 1800); osc(t, mtof(n + 12), v * 0.25, dur * 0.5); }),
+        bass: (t, n, v, dur) => osc(t, mtof(n), v, dur, 'sawtooth', 300),
+        pluck: (t, n, v) => osc(t, mtof(n), v, 0.22, 'square', 1500),
+      };
     }
-    function noise(t, v, dur, type, freq, q) {
-      const s = ctx.createBufferSource(), fl = ctx.createBiquadFilter(), g = ctx.createGain();
-      s.buffer = noiseBuf; fl.type = type; fl.frequency.value = freq; if (q) fl.Q.value = q;
-      env(g, t, 0.002, v, dur);
-      s.connect(fl); fl.connect(g); g.connect(bus); s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.05);
-    }
-    function kick(t, v) {
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.14);
-      env(g, t, 0.004, v, 0.34); o.connect(g); g.connect(bus); o.start(t); o.stop(t + 0.4);
-    }
-    const hat = (t, v, open) => noise(t, v, open ? 0.2 : 0.04, 'highpass', 7500);
-    const snare = (t, v) => { noise(t, v, 0.16, 'bandpass', 1800, 0.8); osc(t, 190, v * 0.5, 0.08, 'triangle'); };
-    const clap = (t, v) => [0, 0.012, 0.025].forEach(d => noise(t + d, v, 0.09, 'bandpass', 1300, 1.2));
-    const keys = (t, notes, v, dur) => notes.forEach(n => { osc(t, mtof(n), v, dur, 'triangle', 1800); osc(t, mtof(n + 12), v * 0.25, dur * 0.5); });
-    const bass = (t, n, v, dur) => osc(t, mtof(n), v, dur, 'sawtooth', 300);
-    const pluck = (t, n, v) => osc(t, mtof(n), v, 0.22, 'square', 1500);
-    function pad(t, notes, dur, v) {
-      notes.forEach(n => [-7, 7].forEach(det => {
-        const o = ctx.createOscillator(), lp = ctx.createBiquadFilter(), g = ctx.createGain();
-        o.type = 'sawtooth'; o.frequency.value = mtof(n); o.detune.value = det;
-        lp.type = 'lowpass'; lp.frequency.value = 650;
-        g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + dur * 0.35);
-        g.gain.linearRampToValueAtTime(v * 0.7, t + dur * 0.8); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.8);
-        o.connect(lp); lp.connect(g); g.connect(bus); o.start(t); o.stop(t + dur + 0.9);
-      }));
-    }
-    // --- styles: [bass root, chord notes] per bar, played on a 16-step grid ---
+    // --- styles: [bass root, chord notes] per bar on a 16-step grid ---
     const STYLES = {
-      calm: { bpm: 60, prog: [[48, [60, 64, 67, 71]], [45, [57, 60, 64, 67]], [41, [57, 60, 64, 65]], [43, [55, 59, 62, 64]]],
-        play(s, t, bar, spb) {
+      calm: { bpm: 60, bars: 8, prog: [[48, [60, 64, 67, 71]], [45, [57, 60, 64, 67]], [41, [57, 60, 64, 65]], [43, [55, 59, 62, 64]]],
+        play(k, s, t, bar, spb) {
           const [root, ch] = this.prog[Math.floor(bar / 2) % 4];
-          if (s === 0 && bar % 2 === 0) { pad(t, ch, spb * 32, 0.022); osc(t, mtof(root - 12), 0.09, spb * 30, 'sine', 0, 1.5); }
-          if (s % 4 === 0 && Math.random() < 0.55) osc(t, mtof(ch[Math.floor(Math.random() * ch.length)] + 12), 0.05, 1.6, 'sine');
+          if (s === 0 && bar % 2 === 0) { k.pad(t, ch, spb * 32, 0.022); k.osc(t, mtof(root - 12), 0.09, spb * 30, 'sine', 0, 1.5); }
+          if (s % 4 === 0 && Math.random() < 0.55) k.osc(t, mtof(ch[Math.floor(Math.random() * ch.length)] + 12), 0.05, 1.6, 'sine');
         } },
-      lofi: { bpm: 78, swing: 0.3, prog: [[50, [53, 57, 60, 64]], [43, [53, 59, 64]], [48, [52, 55, 59, 62]], [45, [55, 60, 64]]],
-        play(s, t, bar, spb) {
+      lofi: { bpm: 78, bars: 8, swing: 0.3, prog: [[50, [53, 57, 60, 64]], [43, [53, 59, 64]], [48, [52, 55, 59, 62]], [45, [55, 60, 64]]],
+        play(k, s, t, bar, spb) {
           const [root, ch] = this.prog[bar % 4];
-          if (s === 0 || s === 10) kick(t, 0.55);
-          if (s === 4 || s === 12) snare(t, 0.2);
-          if (s % 2 === 0) hat(t, rnd(0.04, 0.08));
-          if (s === 0) { keys(t, ch, 0.045, spb * 14); bass(t, root - 12, 0.2, spb * 7); }
-          if (s === 10) bass(t, root - 12, 0.16, spb * 4);
-          if (s === 11) keys(t, ch.slice(-2), 0.03, spb * 4);
+          if (s === 0 || s === 10) k.kick(t, 0.55);
+          if (s === 4 || s === 12) k.snare(t, 0.2);
+          if (s % 2 === 0) k.hat(t, rnd(0.04, 0.08));
+          if (s === 0) { k.keys(t, ch, 0.045, spb * 14); k.bass(t, root - 12, 0.2, spb * 7); }
+          if (s === 10) k.bass(t, root - 12, 0.16, spb * 4);
+          if (s === 11) k.keys(t, ch.slice(-2), 0.03, spb * 4);
         } },
-      energy: { bpm: 124, prog: [[45, [57, 60, 64]], [41, [57, 60, 65]], [48, [55, 60, 64]], [43, [55, 59, 62]]],
-        play(s, t, bar, spb) {
+      energy: { bpm: 124, bars: 8, prog: [[45, [57, 60, 64]], [41, [57, 60, 65]], [48, [55, 60, 64]], [43, [55, 59, 62]]],
+        play(k, s, t, bar, spb) {
           const [root, ch] = this.prog[bar % 4];
-          if (s % 4 === 0) kick(t, 0.75);
-          if (s === 4 || s === 12) clap(t, 0.16);
-          if (s % 4 === 2) { hat(t, 0.07, true); bass(t, root - 12, 0.2, spb * 1.6); }
-          else if (s % 2 === 1) hat(t, 0.03);
-          if (s % 2 === 0) pluck(t, ch[(s / 2) % ch.length] + 12, 0.035);
-          if (s === 0) pad(t, ch, spb * 16, 0.01);
+          if (s % 4 === 0) k.kick(t, 0.75);
+          if (s === 4 || s === 12) k.clap(t, 0.16);
+          if (s % 4 === 2) { k.hat(t, 0.07, true); k.bass(t, root - 12, 0.2, spb * 1.6); }
+          else if (s % 2 === 1) k.hat(t, 0.03);
+          if (s % 2 === 0) k.pluck(t, ch[(s / 2) % ch.length] + 12, 0.035);
+          if (s === 0) k.pad(t, ch, spb * 16, 0.01);
         } },
     };
-    function schedule() {
-      const st = STYLES[cur]; if (!st || !ctx) return;
-      const spb = 60 / st.bpm / 4;
-      if (nextT < ctx.currentTime - 0.1) nextT = ctx.currentTime + 0.05;   // woke up late: don't play a burst
-      while (nextT < ctx.currentTime + 0.3) {
-        const s = step % 16, bar = Math.floor(step / 16);
-        st.play(s, nextT + (st.swing && s % 4 === 2 ? spb * st.swing : 0), bar, spb);
-        nextT += spb; step++;
+    // Render a style once into a seamless loop
+    function render(name) {
+      if (loops[name]) return loops[name];
+      const st = STYLES[name], OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      if (!st || !OAC || !ctx) return Promise.reject(new Error('no audio'));
+      const sr = 44100, spb = 60 / st.bpm / 4, steps = st.bars * 16;
+      const n = Math.round(steps * spb * sr), tail = 3 * sr;
+      const off = new OAC(1, n + tail, sr);
+      const k = kit(off, off.destination);
+      for (let i = 0; i < steps; i++) {
+        const s = i % 16;
+        st.play(k, s, i * spb + (st.swing && s % 4 === 2 ? spb * st.swing : 0), Math.floor(i / 16), spb);
       }
+      loops[name] = new Promise((res, rej) => {
+        off.oncomplete = e => {
+          const r = e.renderedBuffer.getChannelData(0);
+          const buf = ctx.createBuffer(1, n, sr), o = buf.getChannelData(0);
+          o.set(r.subarray(0, n));
+          for (let i = 0; i < tail && i < n; i++) o[i] += r[n + i];   // fold the tail back in so the loop is seamless
+          res(buf);
+        };
+        try { const p = off.startRendering(); if (p && p.catch) p.catch(rej); } catch (e) { rej(e); }
+      });
+      loops[name].catch(() => { delete loops[name]; });
+      return loops[name];
     }
+    function fadeTo(v, secs) {
+      const t = ctx.currentTime;
+      bus.gain.cancelScheduledValues(t); bus.gain.setValueAtTime(Math.max(bus.gain.value, 0.0001), t);
+      bus.gain.linearRampToValueAtTime(Math.max(v, 0.0001), t + secs);
+    }
+    function stopSrc() { if (src) { try { src.stop(); } catch (e) {} try { src.disconnect(); } catch (e) {} src = null; } }
     function playFile() { if (!fileEl) return; fileEl.muted = false; const p = fileEl.play(); if (p && p.catch) p.catch(() => {}); }
     function start() {
-      const t = ctx.currentTime;
-      bus.gain.cancelScheduledValues(t); bus.gain.setValueAtTime(0.0001, t);
-      bus.gain.linearRampToValueAtTime(BASE * level, t + 1.2);
-      if (cur === 'mine') return playFile();
-      step = 0; nextT = t + 0.06; schedule();
-      timer = setInterval(schedule, 70);
+      const my = ++token;
+      if (cur === 'mine') { playFile(); fadeTo(BASE * level, 1.2); return; }
+      render(cur).then(buf => {
+        if (my !== token) return;
+        stopSrc();
+        src = ctx.createBufferSource(); src.buffer = buf; src.loop = true; src.connect(bus); src.start();
+        fadeTo(BASE * level, 1.2);
+      }).catch(() => {});
     }
-    function stop() { clearInterval(timer); timer = null; if (fileEl) fileEl.pause(); }
+    function stop() { token++; stopSrc(); if (fileEl) fileEl.pause(); }
     // Fade to a new style ('off' | 'calm' | 'lofi' | 'energy' | 'mine') at volume lvl
     function set(style, lvl) {
       if (style === want && lvl === level) return;
       if (!init()) return;
-      const t = ctx.currentTime;
-      if (style === want) { level = lvl; if (cur !== 'off') bus.gain.setTargetAtTime(BASE * level, t, 0.15); return; }
+      if (style === want) { level = lvl; if (cur !== 'off') fadeTo(BASE * level, 0.3); return; }
       want = style; level = lvl;
-      bus.gain.cancelScheduledValues(t); bus.gain.setValueAtTime(Math.max(bus.gain.value, 0.0001), t); bus.gain.linearRampToValueAtTime(0.0001, t + 0.45);
+      if (STYLES[style]) render(style).catch(() => {});   // start preparing straight away
+      fadeTo(0.0001, 0.45);
       clearTimeout(switchT);
       switchT = setTimeout(() => { stop(); cur = want; if (cur !== 'off') start(); }, 480);
+    }
+    // iPhone can "interrupt" web audio (for example while the voice speaks) — keep switching it back on
+    function keepAlive() {
+      if (!ctx || want === 'off') return;
+      if (ctx.state !== 'running' && ctx.state !== 'closed') { try { const p = ctx.resume(); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
+      if (cur === 'mine' && fileEl && fileEl.paused && Date.now() - lastFileTry > 2000) { lastFileTry = Date.now(); playFile(); }
     }
     // Quieter while the coach talks
     function duck(on) { if (duckG) duckG.gain.setTargetAtTime(on ? 0.3 : 1, ctx.currentTime, on ? 0.05 : 0.35); }
@@ -1227,7 +1259,9 @@ svg { display: block; flex: none; }
       const done = () => { if (cur !== 'mine') fileEl.pause(); fileEl.muted = false; };
       if (p && p.then) p.then(done, () => { primed = false; fileEl.muted = false; }); else done();
     }
-    return { set, duck, useFile, prime, hasFile: () => !!fileEl, fileName: () => fileName, get style() { return cur; } };
+    const prepare = name => { if (STYLES[name] && init()) render(name).catch(() => {}); };
+    return { set, duck, useFile, prime, keepAlive, prepare, hasFile: () => !!fileEl, fileName: () => fileName,
+      get style() { return cur; }, get state() { return ctx ? ctx.state : 'none'; }, get playing() { return !!src || (cur === 'mine' && fileEl && !fileEl.paused); } };
   })();
 
   // Saved song (kept on this phone only)
@@ -1250,7 +1284,7 @@ svg { display: block; flex: none; }
   const AUTO_STYLE = { warmup: 'lofi', mobility: 'calm', strength: 'lofi', cardio: 'energy', cool: 'calm' };
   function syncMusic() {
     let style = 'off';
-    const active = view === 'workout' && (state.status === 'running' || state.status === 'waiting');
+    const active = view === 'workout' && /running|paused|waiting/.test(state.status);
     if (sound.music !== 'off' && (active || soundOpen)) {
       style = sound.music === 'auto' ? (AUTO_STYLE[(view === 'workout' ? cur() : SECS[0]).id] || 'lofi') : sound.music;
       if (style === 'mine' && !Music.hasFile()) style = 'off';
@@ -1410,6 +1444,7 @@ svg { display: block; flex: none; }
     if (state.status === 'running' && dt > 0) advance(dt * SPEED, dt < 2);
     render();
     syncMusic();
+    Music.keepAlive();
     if (isActive() && now - lastSave > 1000) save();
   }
 
@@ -1418,6 +1453,7 @@ svg { display: block; flex: none; }
     state.status = 'running';
     state.lastTick = Date.now();
     if (!state.lastW) state.lastW = Object.assign({}, weights);
+    if (sound.music === 'auto') ['lofi', 'calm', 'energy'].forEach(Music.prepare);
     const S = cur();
     let say;
     if (S.type === 'strength') say = strengthSay(S, false);
