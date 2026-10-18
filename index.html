@@ -538,7 +538,6 @@ svg { display: block; flex: none; }
     <div class="k">FOCUS</div>
     <div class="seg3" id="focusSeg">
       <button data-f="balanced">BALANCED</button>
-      <button data-f="cardio">CARDIO</button>
       <button data-f="machines">MACHINES</button>
     </div>
     <div class="fnote"><div id="focusNote">YOUR STANDARD PLAN</div><span>SAME HEART-RATE TARGETS · ALWAYS 60 MIN</span></div>
@@ -612,23 +611,21 @@ svg { display: block; flex: none; }
 
   /* =====================================================================
      WORKOUT LIBRARY — edit here to change the workouts.
-     "Balanced" is each plan exactly as written. The other focus options
-     only move minutes between strength and cardio; every combination is
-     60 minutes and uses the same heart-rate targets.
+     "Balanced" is each plan exactly as written. "Machines" moves minutes
+     from the bike to strength; both are 60 minutes with the same
+     heart-rate targets, and the bike is never longer than 20 minutes.
      ===================================================================== */
   const FOCI = {
     balanced: { label: 'BALANCED', note: 'YOUR STANDARD PLAN' },
-    cardio:   { label: 'CARDIO',   note: 'LONGER CARDIO · 1 SET PER MACHINE' },
-    machines: { label: 'MACHINES', note: 'MORE SETS · SHORTER CARDIO' },
+    machines: { label: 'MACHINES', note: 'MORE SETS · SHORTER BIKE' },
   };
-  const FOCUS_KEYS = ['balanced', 'cardio', 'machines'];
+  const FOCUS_KEYS = ['balanced', 'machines'];
   // Cardio interval minutes: easy, moderate, moderately hard, build, peak, recovery
   const CARDIO_SHAPE = {
     balanced: [5, 5, 5, 1, 1, 3],    // 20 min
-    cardio:   [6, 8, 10, 1, 1, 4],   // 30 min
     machines: [3, 3, 2, 1, 1, 2],    // 12 min
   };
-  const SETS = (balanced, cardio, machines) => ({ balanced, cardio, machines });
+  const SETS = (balanced, machines) => ({ balanced, machines });
   const TIP = '<b>WEIGHT:</b> Finish each set feeling like you could still do 2–3 good reps. <b>GOOD FORM FIRST.</b>';
 
   /* ---------- Machine illustrations (drawn in code, no image files) ---------- */
@@ -657,6 +654,11 @@ svg { display: block; flex: none; }
     const dbV = (x, y) => ln('dbh', x, y - 7, x, y + 7) + ln('dbp', x - 6, y - 7, x + 6, y - 7) + ln('dbp', x - 6, y + 7, x + 6, y + 7);
     const svg = body => '<svg viewBox="0 0 120 120" aria-hidden="true">' + body + '</svg>';
     return {
+      legpress: svg(floor +
+        ln('pad', 22, 98, 34, 54) + ln('pad', 28, 98, 58, 98) + ln('m', 44, 103, 44, 110) +
+        ln('pad', 103, 48, 103, 90) + ln('m', 103, 90, 103, 110) +
+        pl('p', '43,53 52,88') + pl('p', '52,88 76,64 97,76') + pl('p', '45,60 52,78 62,91') + head(39, 41) +
+        arrow(66, 88, 90, 88)),
       chestpress: svg(floor +
         ln('pad', 30, 40, 30, 94) + ln('pad', 30, 97, 60, 97) + ln('m', 46, 102, 46, 110) +
         pa('m', 'M30 26Q70 10 86 40') + ln('m2', 86, 42, 86, 64) +
@@ -687,10 +689,6 @@ svg { display: block; flex: none; }
         ln('pad', 14, 88, 34, 88) + ln('m', 18, 93, 18, 110) + ln('m', 30, 93, 30, 110) +
         pl('p', '40,80 50,50') + pl('p', '40,80 66,80 62,106') + pl('p', '50,54 62,68 64,56') + head(48, 37) +
         dbV(68, 52) + arrow(96, 100, 96, 72)),
-      dbrow: svg(floor +
-        ln('pad', 14, 82, 44, 82) + ln('m', 18, 87, 18, 110) + ln('m', 40, 87, 40, 110) +
-        pl('p', '42,48 74,58') + pl('p', '42,50 30,76') + pl('p', '74,58 84,82 82,106') + pl('p', '50,52 52,84') + head(32, 41) +
-        dbH(52, 88) + arrow(104, 100, 104, 74)),
       dbpress: svg(floor +
         ln('pad', 60, 40, 60, 88) + ln('pad', 36, 92, 84, 92) + ln('m', 60, 97, 60, 110) +
         pl('p', '60,46 60,82') + pl('p', '55,50 40,46 38,24') + pl('p', '65,50 80,46 82,24') +
@@ -709,13 +707,13 @@ svg { display: block; flex: none; }
 
   // Form tips shown when you tap a machine picture
   const HOWTO = {
+    legpress: ['Sit back, feet hip-width and flat on the platform', 'Lower until your knees are about 90°', 'Push through your heels — don’t lock your knees'],
     chestpress: ['Handles level with the middle of your chest', 'Press forward smoothly, elbows soft at the end', 'Keep your shoulders down and back'],
     latpulldown: ['Thighs snug under the pad', 'Pull the bar to your upper chest', 'Lead with your elbows — don’t lean far back'],
     legcurl: ['Line up your knees with the machine’s pivot', 'Curl your heels down and back', 'Return slowly — don’t let the weight drop'],
     legext: ['Knees in line with the pivot, pad just above your ankles', 'Straighten smoothly and pause at the top', 'Lower slowly'],
     abs: ['Start with a light weight', 'Curl your ribs toward your hips — don’t pull with your arms', 'Breathe out as you crunch'],
     goblet: ['Hold one dumbbell upright at your chest', 'Sit back and down — knees follow your toes', 'Stand up through your heels (a bench behind you helps)'],
-    dbrow: ['One hand and knee on a bench, back flat', 'Pull the dumbbell up to your hip', 'Lower slowly — then switch arms'],
     dbpress: ['Sit on a bench with back support', 'Start at shoulder height, palms forward', 'Press up without arching your back; lower slowly'],
     dbcalf: ['Stand tall, dumbbells at your sides', 'Rise onto your toes and pause', 'Lower slowly — use one dumbbell and hold a rack if you need balance'],
     bike: ['Seat at hip height — slight knee bend at the bottom', 'Change resistance gradually', 'Upright posture, relaxed grip'],
@@ -724,7 +722,7 @@ svg { display: block; flex: none; }
   const LIBRARY = {
     /* ---------------- WORKOUT A · FULL BODY + BIKE ---------------- */
     A: {
-      name: 'WORKOUT A', type: 'FULL BODY + BIKE', highlights: '6 EXERCISES · SQUAT, PRESS, ROW',
+      name: 'WORKOUT A', type: 'FULL BODY + BIKE', highlights: '6 EXERCISES · LEG PRESS, SQUAT, PRESS',
       sections: [
         {
           id: 'warmup', icon: '🚴', title: 'BIKE WARM-UP', type: 'timed', img: 'bike', showArt: true,
@@ -751,16 +749,16 @@ svg { display: block; flex: none; }
         },
         {
           id: 'strength', icon: '🏋️', title: 'FULL-BODY STRENGTH', type: 'strength',
-          minutes: { balanced: 22, cardio: 12, machines: 30 }, rest: 60, restReady: 45,
+          minutes: { balanced: 22, machines: 30 }, rest: 60, restReady: 45,
           enterSay: 'Mobility complete. Strength training.',
           tip: TIP,
           exercises: [
-            { name: 'GOBLET SQUAT', img: 'goblet', note: 'DUMBBELL AT CHEST', reps: '10–12', sets: SETS(2, 1, 3), say: 'Dumbbell goblet squat' },
-            { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 1, 3), say: 'Chest press' },
-            { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '10–12', sets: SETS(2, 1, 3), say: 'Lat pulldown' },
-            { name: 'DUMBBELL ROW', img: 'dbrow', note: 'EACH ARM · ON A BENCH', reps: '10–12', sets: SETS(2, 1, 3), say: 'Dumbbell row' },
-            { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg curl' },
-            { name: 'DUMBBELL SHOULDER PRESS', img: 'dbpress', note: 'SEATED ON A BENCH', reps: '8–10', sets: SETS(2, 1, 3), say: 'Dumbbell shoulder press' },
+            { name: 'GOBLET SQUAT', img: 'goblet', note: 'DUMBBELL AT CHEST', reps: '10–12', sets: SETS(2, 3), say: 'Dumbbell goblet squat' },
+            { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 3), say: 'Chest press' },
+            { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '10–12', sets: SETS(2, 3), say: 'Lat pulldown' },
+            { name: 'SEATED LEG PRESS', img: 'legpress', reps: '10–12', sets: SETS(2, 3), say: 'Seated leg press' },
+            { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 3), say: 'Leg curl' },
+            { name: 'DUMBBELL SHOULDER PRESS', img: 'dbpress', note: 'SEATED ON A BENCH', reps: '8–10', sets: SETS(2, 3), say: 'Dumbbell shoulder press' },
           ],
         },
         {
@@ -830,17 +828,17 @@ svg { display: block; flex: none; }
         },
         {
           id: 'strength', icon: '🏋️', title: 'FULL-BODY STRENGTH', type: 'strength',
-          minutes: { balanced: 23, cardio: 13, machines: 31 }, rest: 60, restReady: 45,
+          minutes: { balanced: 23, machines: 31 }, rest: 60, restReady: 45,
           enterSay: 'Mobility complete. Strength training.',
           tip: TIP,
           exercises: [
-            { name: 'LEG EXTENSION', img: 'legext', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg extension' },
-            { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 1, 3), say: 'Chest press' },
-            { name: 'DUMBBELL ROW', img: 'dbrow', note: 'EACH ARM · ON A BENCH', reps: '10–12', sets: SETS(2, 1, 3), say: 'Dumbbell row' },
-            { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 1, 3), say: 'Leg curl' },
-            { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '8–12', sets: SETS(2, 1, 3), say: 'Lat pulldown' },
-            { name: 'DUMBBELL CALF RAISE', img: 'dbcalf', note: 'DUMBBELLS AT SIDES', reps: '12–15', sets: SETS(2, 1, 2), say: 'Dumbbell calf raise' },
-            { name: 'ABDOMINAL MACHINE', img: 'abs', reps: '10–15', sets: SETS(2, 1, 2), say: 'Abdominal machine' },
+            { name: 'LEG EXTENSION', img: 'legext', reps: '10–12', sets: SETS(2, 3), say: 'Leg extension' },
+            { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 3), say: 'Chest press' },
+            { name: 'SEATED LEG PRESS', img: 'legpress', reps: '10–12', sets: SETS(2, 3), say: 'Seated leg press' },
+            { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 3), say: 'Leg curl' },
+            { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '8–12', sets: SETS(2, 3), say: 'Lat pulldown' },
+            { name: 'DUMBBELL CALF RAISE', img: 'dbcalf', note: 'DUMBBELLS AT SIDES', reps: '12–15', sets: SETS(2, 2), say: 'Dumbbell calf raise' },
+            { name: 'ABDOMINAL MACHINE', img: 'abs', reps: '10–15', sets: SETS(2, 2), say: 'Abdominal machine' },
           ],
         },
         {
