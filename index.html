@@ -358,10 +358,43 @@ svg { display: block; flex: none; }
 .vtip b { color: var(--text); }
 .mhead { display: flex; align-items: center; justify-content: space-between; }
 .mgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.mgrid button { height: 46px; border-radius: 14px; background: var(--surface2); font-size: 14px; font-weight: 800; letter-spacing: .06em; color: var(--muted); }
+.mgrid button { height: clamp(38px, 5.6vh, 46px); border-radius: 14px; background: var(--surface2); font-size: 14px; font-weight: 800; letter-spacing: .06em; color: var(--muted); }
 .mgrid button.on { background: var(--text); color: var(--bg); }
+.nextsong { height: 34px; padding: 0 12px; border-radius: 10px; background: var(--surface2); font-size: 13px; font-weight: 800; letter-spacing: .06em; }
+.volrow { display: flex; align-items: center; gap: 12px; min-height: 44px; }
+.vlab { font-size: 20px; }
+.vpct { width: 48px; text-align: right; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.volrow input { flex: 1 1 auto; min-width: 0; height: 44px; margin: 0; background: transparent; -webkit-appearance: none; appearance: none; touch-action: none; }
+.volrow input::-webkit-slider-runnable-track { height: 10px; border-radius: 5px; background: linear-gradient(to right, var(--text) var(--p, 50%), var(--surface2) var(--p, 50%)); }
+.volrow input::-moz-range-track { height: 10px; border-radius: 5px; background: linear-gradient(to right, var(--text) var(--p, 50%), var(--surface2) var(--p, 50%)); }
+.volrow input::-webkit-slider-thumb { -webkit-appearance: none; width: 34px; height: 34px; margin-top: -12px; border-radius: 50%; background: var(--text); border: 4px solid var(--bg); }
+.volrow input::-moz-range-thumb { width: 34px; height: 34px; border-radius: 50%; background: var(--text); border: 4px solid var(--bg); }
 .mnote { min-height: 36px; font-size: 13px; line-height: 1.4; color: var(--muted); text-align: center; }
 .mnote b { color: var(--text); }
+
+/* Machine picker (strength) */
+.vpick { flex: 1 1 auto; min-height: 0; justify-content: flex-start; }
+.phead, .exbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; }
+.backbtn { height: clamp(30px, 5vh, 40px); padding: 0 14px; border-radius: 12px; background: var(--surface2); font-size: 14px; font-weight: 800; letter-spacing: .06em; }
+.k.rpill { font-size: clamp(16px, 2.6vh, 22px); color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: .06em; }
+.k.rpill.ready { color: var(--ok); }
+.tiles { flex: 1 1 auto; min-height: 0; width: 100%; display: grid; gap: 8px; grid-template-columns: repeat(3, 1fr); grid-auto-rows: minmax(0, 1fr); }
+.tiles.c4 { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.tile {
+  position: relative; min-height: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; padding: 6px 4px; border-radius: 16px; background: var(--surface2); border: 2px solid transparent;
+}
+.tile:active { filter: brightness(1.25); }
+.tico { flex: 1 1 auto; min-height: 0; width: 100%; max-width: 76px; }
+.tname { font-size: clamp(11px, 1.6vh, 13px); font-weight: 800; letter-spacing: .02em; line-height: 1.15; text-align: center; }
+.tstat { font-size: clamp(10px, 1.4vh, 12px); font-weight: 800; letter-spacing: .04em; color: var(--muted); white-space: nowrap; }
+.tile.part { border-color: var(--accent); }
+.tile.part .tstat { color: var(--accent); }
+.tile.fin { border-color: var(--ok); }
+.tile.fin .tico { opacity: .3; }
+.tile.fin .tstat { color: var(--ok); }
+.tchk { display: none; position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border-radius: 50%; background: var(--ok); color: #06210F; font-size: 15px; font-weight: 900; line-height: 24px; text-align: center; }
+.tile.fin .tchk { display: block; }
 
 /* Machine icons on the workout cards */
 .wc-icons { display: flex; gap: 4px; color: var(--c-strength); }
@@ -411,6 +444,7 @@ svg { display: block; flex: none; }
 @media (max-height: 740px) { .wc-icons { display: none; } }
 @media (max-height: 720px) { .art.mini { display: none; } }
 @media (max-height: 600px) {
+  .tstat { display: none; }
   .thumb { width: 52px; height: 52px; border-radius: 14px; }
   .art.mid { display: none; }
   .vtip { display: none; }
@@ -456,9 +490,15 @@ svg { display: block; flex: none; }
       <div class="cue" id="tCue" hidden></div>
     </div>
 
-    <!-- Strength -->
+    <!-- Strength: pick any free machine -->
+    <div class="v vpick" id="vPick" hidden>
+      <div class="phead"><span class="k" id="pDone">0 OF 6 DONE</span><span class="k pace" id="pPace">ON PACE</span></div>
+      <div class="tiles" id="tiles"></div>
+    </div>
+
+    <!-- Strength: the machine you picked -->
     <div class="v" id="vStr" hidden>
-      <div class="k"><span id="sIdx">EXERCISE 1 OF 6</span> · <span class="pace" id="sPace">ON PACE</span></div>
+      <div class="exbar"><button class="backbtn" id="sBack">‹ ALL MACHINES</button><span class="k pace" id="sPace">ON PACE</span></div>
       <div class="exhead">
         <button class="art thumb" id="sArt" aria-label="How to use this machine"></button>
         <div class="exinfo">
@@ -490,7 +530,7 @@ svg { display: block; flex: none; }
     </div>
   </main>
 
-  <div class="next" id="next"><span>NEXT</span> <b id="nextText">—</b></div>
+  <div class="next" id="next"><span id="nextPre">NEXT</span> <b id="nextText">—</b></div>
 
   <div class="controls">
     <div class="row">
@@ -593,13 +633,15 @@ svg { display: block; flex: none; }
     </div>
     <div class="vlist scroll" id="vList"></div>
     <div class="vtip">Sounds robotic? On your iPhone open <b>Settings › Accessibility › Spoken Content › Voices › English</b>, download a <b>Premium</b> voice (for example Ava or Zoe), then pick it here.</div>
-    <div class="mhead"><div class="k">MUSIC</div><div class="seg3 mini" id="volSeg"><button data-vol="0.5">LOW</button><button data-vol="1">MED</button><button data-vol="1.6">HIGH</button></div></div>
+    <div class="mhead"><div class="k">MUSIC</div><button class="nextsong" id="nextSong" hidden>NEXT SONG ⏭</button></div>
     <div class="mgrid" id="musicGrid">
       <button data-m="off">OFF</button><button data-m="calm">CALM</button><button data-m="lofi">LO-FI</button>
-      <button data-m="energy">ENERGY</button><button data-m="auto">AUTO</button><button data-m="mine">MY MUSIC</button>
+      <button data-m="groove">GROOVE</button><button data-m="drive">DRIVE</button><button data-m="energy">ENERGY</button>
+      <button data-m="mix">MIX ⟳</button><button data-m="auto">AUTO</button><button data-m="mine">MY MUSIC</button>
     </div>
+    <div class="volrow"><span class="vlab">🔈</span><input type="range" id="volRange" min="0" max="100" step="5" value="50" aria-label="Music volume"><span class="vpct" id="volPct">50%</span></div>
     <div class="mnote" id="musicNote"></div>
-    <input type="file" id="musicFile" accept="audio/*" hidden>
+    <input type="file" id="musicFile" accept="audio/*" multiple hidden>
   </section>
 </div>
 <div id="flash"></div>
@@ -756,9 +798,9 @@ svg { display: block; flex: none; }
             { name: 'GOBLET SQUAT', img: 'goblet', note: 'DUMBBELL AT CHEST', reps: '10–12', sets: SETS(2, 3), say: 'Dumbbell goblet squat' },
             { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 3), say: 'Chest press' },
             { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '10–12', sets: SETS(2, 3), say: 'Lat pulldown' },
-            { name: 'SEATED LEG PRESS', img: 'legpress', reps: '10–12', sets: SETS(2, 3), say: 'Seated leg press' },
+            { name: 'SEATED LEG PRESS', short: 'LEG PRESS', img: 'legpress', reps: '10–12', sets: SETS(2, 3), say: 'Seated leg press' },
             { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 3), say: 'Leg curl' },
-            { name: 'DUMBBELL SHOULDER PRESS', img: 'dbpress', note: 'SEATED ON A BENCH', reps: '8–10', sets: SETS(2, 3), say: 'Dumbbell shoulder press' },
+            { name: 'DUMBBELL SHOULDER PRESS', short: 'SHOULDER PRESS', img: 'dbpress', note: 'SEATED ON A BENCH', reps: '8–10', sets: SETS(2, 3), say: 'Dumbbell shoulder press' },
           ],
         },
         {
@@ -834,11 +876,11 @@ svg { display: block; flex: none; }
           exercises: [
             { name: 'LEG EXTENSION', img: 'legext', reps: '10–12', sets: SETS(2, 3), say: 'Leg extension' },
             { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 3), say: 'Chest press' },
-            { name: 'SEATED LEG PRESS', img: 'legpress', reps: '10–12', sets: SETS(2, 3), say: 'Seated leg press' },
+            { name: 'SEATED LEG PRESS', short: 'LEG PRESS', img: 'legpress', reps: '10–12', sets: SETS(2, 3), say: 'Seated leg press' },
             { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 3), say: 'Leg curl' },
             { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '8–12', sets: SETS(2, 3), say: 'Lat pulldown' },
-            { name: 'DUMBBELL CALF RAISE', img: 'dbcalf', note: 'DUMBBELLS AT SIDES', reps: '12–15', sets: SETS(2, 2), say: 'Dumbbell calf raise' },
-            { name: 'ABDOMINAL MACHINE', img: 'abs', reps: '10–15', sets: SETS(2, 2), say: 'Abdominal machine' },
+            { name: 'DUMBBELL CALF RAISE', short: 'CALF RAISE', img: 'dbcalf', note: 'DUMBBELLS AT SIDES', reps: '12–15', sets: SETS(2, 2), say: 'Dumbbell calf raise' },
+            { name: 'ABDOMINAL MACHINE', short: 'ABS MACHINE', img: 'abs', reps: '10–15', sets: SETS(2, 2), say: 'Abdominal machine' },
           ],
         },
         {
@@ -936,7 +978,11 @@ svg { display: block; flex: none; }
   let focus = load('focus', 'balanced');
   if (!FOCI[focus]) focus = 'balanced';
   let history = load('history', []);
-  const sound = Object.assign({ voice: 'auto', rate: 1, music: 'off', vol: 1 }, load('sound', {}));
+  const savedSound = load('sound', {});
+  const sound = Object.assign({ voice: 'auto', rate: 1, music: 'off', mvol: 50 }, savedSound);
+  if (savedSound.mvol == null && savedSound.vol) sound.mvol = Math.round(50 * Math.pow(savedSound.vol, 2 / 3) / 5) * 5;
+  delete sound.vol;
+  const musicLevel = () => Math.pow(sound.mvol / 50, 1.5);   // 50 % = the old "MED", 100 % ≈ 2.8× louder
   const saveSound = () => store('sound', sound);
   let soundOpen = false;
 
@@ -944,12 +990,12 @@ svg { display: block; flex: none; }
 
   function freshState(w, f) {
     return {
-      v: 2,
+      v: 3,
       w: w, focus: f,
       status: 'idle',          // idle | running | paused | waiting | done
       sec: 0,                  // current section index
       pos: 0,                  // seconds into current timed section
-      str: { ex: 0, set: 0, elapsed: 0, resting: false, rest: 0 },
+      str: { ex: -1, set: 0, done: [], last: -1, elapsed: 0, resting: false, rest: 0 },   // ex -1 = machine list
       elapsed: 0,              // active workout seconds
       hr: null,                // last heart rate you typed in { v, at }
       lastW: null,             // weights snapshot at start ("last time")
@@ -960,7 +1006,7 @@ svg { display: block; flex: none; }
   }
   function loadState() {
     const s = load('state', null);
-    if (!s || s.v !== 2 || typeof s.savedAt !== 'number' || !LIBRARY[s.w] || !FOCI[s.focus]) return null;
+    if (!s || s.v !== 3 || typeof s.savedAt !== 'number' || !LIBRARY[s.w] || !FOCI[s.focus]) return null;
     if (Date.now() - s.savedAt > STALE_MS) return null;
     if (s.sec < 0 || s.sec >= LIBRARY[s.w].sections.length) return null;
     return s;
@@ -1086,7 +1132,7 @@ svg { display: block; flex: none; }
   const Music = (function () {
     let ctx = null, bus = null, duckG = null, src = null;
     let cur = 'off', want = 'off', level = 1, switchT = null, token = 0;
-    let fileEl = null, fileName = '', primed = false, lastFileTry = 0;
+    let fileEl = null, fileName = '', primed = false, lastFileTry = 0, files = [], fileIdx = 0;
     const loops = {};
     const BASE = 0.34;
     const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
@@ -1174,6 +1220,26 @@ svg { display: block; flex: none; }
           if (s % 2 === 0) k.pluck(t, ch[(s / 2) % ch.length] + 12, 0.035);
           if (s === 0) k.pad(t, ch, spb * 16, 0.01);
         } },
+      groove: { bpm: 118, bars: 8, prog: [[41, [57, 60, 64]], [40, [55, 59, 62]], [38, [53, 57, 60]], [36, [52, 55, 59]]],
+        play(k, s, t, bar, spb) {
+          const [root, ch] = this.prog[bar % 4];
+          if (s % 4 === 0) k.kick(t, 0.7);
+          if (s === 4 || s === 12) k.clap(t, 0.13);
+          if (s % 4 === 2) k.hat(t, 0.06, true);
+          if (s % 2 === 1) k.hat(t, 0.025);
+          if (s === 3 || s === 10) k.keys(t, ch, 0.04, spb * 1.5);
+          if ([0, 3, 6, 10, 14].includes(s)) k.bass(t, root + (s === 6 || s === 14 ? 12 : 0), 0.18, spb * 1.2);
+        } },
+      drive: { bpm: 100, bars: 8, prog: [[40, [55, 59, 64]], [36, [55, 60, 64]], [43, [55, 59, 62]], [38, [54, 57, 62]]],
+        play(k, s, t, bar, spb) {
+          const [root, ch] = this.prog[bar % 4];
+          if (s === 0 || s === 8 || s === 10) k.kick(t, 0.7);
+          if (s === 4 || s === 12) k.snare(t, 0.22);
+          if (s % 2 === 0) k.hat(t, 0.035);
+          k.bass(t, root + (s % 2 ? 12 : 0), 0.11, spb * 0.9);
+          if (s === 0) k.pad(t, ch, spb * 16, 0.014);
+          if (s % 4 === 2) k.pluck(t, ch[(s / 2 + bar) % ch.length] + 12, 0.03);
+        } },
     };
     // Render a style once into a seamless loop
     function render(name) {
@@ -1238,17 +1304,23 @@ svg { display: block; flex: none; }
     }
     // Quieter while the coach talks
     function duck(on) { if (duckG) duckG.gain.setTargetAtTime(on ? 0.3 : 1, ctx.currentTime, on ? 0.05 : 0.35); }
-    // Your own song file
-    function useFile(blob, name) {
-      if (!init()) return;
+    // Your own songs: played in order, then from the start again
+    function useFiles(list) {
+      if (!init() || !list || !list.length) return;
       if (!fileEl) {
-        fileEl = new Audio(); fileEl.loop = true; fileEl.setAttribute('playsinline', '');
+        fileEl = new Audio(); fileEl.setAttribute('playsinline', '');
         try { ctx.createMediaElementSource(fileEl).connect(bus); } catch (e) {}
+        fileEl.addEventListener('ended', () => nextFile());
       }
+      files = list; fileIdx = 0; loadFile();
+    }
+    function loadFile() {
       if (fileEl.src) URL.revokeObjectURL(fileEl.src);
-      fileEl.src = URL.createObjectURL(blob); fileName = name || 'Your song';
+      const f = files[fileIdx];
+      fileEl.src = URL.createObjectURL(f.blob); fileEl.loop = files.length === 1; fileName = f.name || 'Your song';
       if (cur === 'mine') playFile();
     }
+    function nextFile() { if (!files.length) return; fileIdx = (fileIdx + 1) % files.length; loadFile(); }
     // iPhone only lets a page start a song after a tap — do a silent start on the first tap
     function prime() {
       if (!fileEl || primed || cur === 'mine') return;
@@ -1258,7 +1330,8 @@ svg { display: block; flex: none; }
       if (p && p.then) p.then(done, () => { primed = false; fileEl.muted = false; }); else done();
     }
     const prepare = name => { if (STYLES[name] && init()) render(name).catch(() => {}); };
-    return { set, duck, useFile, prime, keepAlive, prepare, hasFile: () => !!fileEl, fileName: () => fileName,
+    return { set, duck, useFiles, nextFile, prime, keepAlive, prepare, hasFile: () => files.length > 0, fileName: () => fileName,
+      songInfo: () => files.length ? (fileIdx + 1) + ' of ' + files.length : '',
       get style() { return cur; }, get state() { return ctx ? ctx.state : 'none'; }, get playing() { return !!src || (cur === 'mine' && fileEl && !fileEl.paused); } };
   })();
 
@@ -1274,20 +1347,28 @@ svg { display: block; flex: none; }
     put(v) { return this.db().then(db => new Promise((res, rej) => { const tx = db.transaction('files', 'readwrite'); tx.objectStore('files').put(v, 'music'); tx.oncomplete = res; tx.onerror = () => rej(tx.error); })); },
     get() { return this.db().then(db => new Promise((res, rej) => { const q = db.transaction('files').objectStore('files').get('music'); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); })); },
   };
-  if (window.indexedDB) SongStore.get().then(r => { if (r && r.blob) Music.useFile(r.blob, r.name); }).catch(() => {});
+  if (window.indexedDB) SongStore.get().then(r => { const list = Array.isArray(r) ? r : (r && r.blob ? [r] : []); if (list.length) Music.useFiles(list); }).catch(() => {});
 
   // Let beeps and voice mix with your own music app when the built-in music is off
   function setSession() { try { if (navigator.audioSession) navigator.audioSession.type = sound.music === 'off' ? 'ambient' : 'playback'; } catch (e) {} }
   setSession();
   const AUTO_STYLE = { warmup: 'lofi', mobility: 'calm', strength: 'lofi', cardio: 'energy', cool: 'calm' };
+  const MIX_ORDER = ['lofi', 'groove', 'energy', 'drive'];
+  const MIX_EVERY = 150;                // seconds per track in MIX
+  let mixT0 = 0, mixSkip = 0, mixOn = false;
   function syncMusic() {
     let style = 'off';
     const active = view === 'workout' && /running|paused|waiting/.test(state.status);
-    if (sound.music !== 'off' && (active || soundOpen)) {
-      style = sound.music === 'auto' ? (AUTO_STYLE[(view === 'workout' ? cur() : SECS[0]).id] || 'lofi') : sound.music;
+    const on = sound.music !== 'off' && (active || soundOpen);
+    if (on && sound.music === 'mix' && !mixOn) { mixT0 = Date.now(); mixSkip = 0; }
+    mixOn = on && sound.music === 'mix';
+    if (on) {
+      if (sound.music === 'auto') style = AUTO_STYLE[(view === 'workout' ? cur() : SECS[0]).id] || 'lofi';
+      else if (sound.music === 'mix') style = MIX_ORDER[(Math.floor((Date.now() - mixT0) / (MIX_EVERY * 1000)) + mixSkip) % MIX_ORDER.length];
+      else style = sound.music;
       if (style === 'mine' && !Music.hasFile()) style = 'off';
     }
-    Music.set(style, sound.vol);
+    Music.set(style, musicLevel());
   }
 
   /* ---------- Visual alert + toast ---------- */
@@ -1337,10 +1418,14 @@ svg { display: block; flex: none; }
   }
 
   /* ---------- Workout engine ---------- */
+  // Strength: machines can be done in any order
+  const doneOf = i => state.str.done[i] || 0;
+  const leftCount = S => S.exercises.filter((e, i) => doneOf(i) < e.sets).length;
+  const setsDone = S => S.exercises.reduce((a, e, i) => a + Math.min(doneOf(i), e.sets), 0);
   function strengthSay(S, intro) {
-    const st = state.str, ex = S.exercises[st.ex];
-    if (st.ex === 0 && st.set === 0) return (intro ? S.enterSay + ' ' : '') + 'Next exercise: ' + ex.say + '.';
-    return (intro ? S.enterSay + ' ' : '') + ex.say + ', set ' + (st.set + 1) + '.';
+    const st = state.str, pre = intro ? S.enterSay + ' ' : '';
+    if (st.ex < 0) return pre + 'Pick any free machine.';
+    return pre + S.exercises[st.ex].say + ', set ' + (st.set + 1) + '.';
   }
 
   // Move forward into section idx. Returns the cue to play.
@@ -1348,7 +1433,7 @@ svg { display: block; flex: none; }
     if (idx >= SECS.length) return finish();
     state.sec = idx;
     const S = SECS[idx];
-    if (S.type === 'strength') { state.str.resting = false; state.str.rest = 0; return { sound: 'change', say: strengthSay(S, true), flash: true }; }
+    if (S.type === 'strength') { state.str.ex = -1; state.str.resting = false; state.str.rest = 0; return { sound: 'change', say: strengthSay(S, true), flash: true }; }
     state.pos = 0;
     if (S.waitForTap && (state.status === 'running' || state.status === 'paused')) {
       state.status = 'waiting';
@@ -1364,7 +1449,7 @@ svg { display: block; flex: none; }
     const S = SECS[idx];
     if (S.type === 'strength') {
       const st = state.str;
-      st.ex = S.exercises.length - 1; st.set = S.exercises[st.ex].sets - 1; st.resting = false; st.rest = 0;
+      st.ex = -1; st.resting = false; st.rest = 0;
       return { sound: 'soft', say: strengthSay(S, false) };
     }
     state.pos = S.starts[S.steps.length - 1];
@@ -1406,7 +1491,7 @@ svg { display: block; flex: none; }
           if (rb < S.restReady && st.rest >= S.restReady && st.rest < S.rest) last = { sound: 'soft' };
           if (st.rest >= S.rest) {
             st.resting = false; st.rest = 0;
-            last = { sound: 'go', say: st.set > 0 ? 'Set ' + (st.set + 1) + '.' : null, flash: true };
+            last = { sound: 'go', say: st.ex >= 0 && st.set > 0 ? 'Set ' + (st.set + 1) + '.' : null, flash: true };
           }
         }
         s = 0;
@@ -1435,6 +1520,7 @@ svg { display: block; flex: none; }
     for (const n of [3, 2, 1]) if (remBefore > n && remAfter <= n) beep('tick');
   }
 
+  let lastNote = 0;
   function tick() {
     const now = Date.now();
     const dt = Math.max(0, (now - state.lastTick) / 1000);
@@ -1443,6 +1529,7 @@ svg { display: block; flex: none; }
     render();
     syncMusic();
     Music.keepAlive();
+    if (soundOpen && (sound.music === 'mix' || sound.music === 'mine') && now - lastNote > 1000) { lastNote = now; renderSound(); }
     if (isActive() && now - lastSave > 1000) save();
   }
 
@@ -1452,6 +1539,7 @@ svg { display: block; flex: none; }
     state.lastTick = Date.now();
     if (!state.lastW) state.lastW = Object.assign({}, weights);
     if (sound.music === 'auto') ['lofi', 'calm', 'energy'].forEach(Music.prepare);
+    if (sound.music === 'mix') MIX_ORDER.forEach(Music.prepare);
     const S = cur();
     let say;
     if (S.type === 'strength') say = strengthSay(S, false);
@@ -1465,18 +1553,30 @@ svg { display: block; flex: none; }
     state.status = 'running'; state.lastTick = Date.now(); state.pos = 0;
     cue({ sound: 'go', say: cur().enterSay, flash: true });
   }
-  function setDone() {
+  // Finish one set of the open machine. After its last set: back to the machine list (or on to the bike when all are done).
+  function completeSet(withRest) {
     const S = cur(), st = state.str, ex = S.exercises[st.ex];
-    if (st.set < ex.sets - 1) {
-      st.set++; st.resting = true; st.rest = 0;
-      cue({ sound: 'soft' });
-    } else if (st.ex < S.exercises.length - 1) {
-      st.ex++; st.set = 0; st.resting = true; st.rest = 0;
-      cue({ sound: 'change', say: 'Next exercise: ' + S.exercises[st.ex].say + '.', flash: true });
-    } else {
-      cue(enterSection(state.sec + 1));
+    st.done[st.ex] = Math.min(ex.sets, doneOf(st.ex) + 1); st.set = st.done[st.ex];
+    st.resting = false; st.rest = 0;
+    if (st.set < ex.sets) {
+      if (withRest) { st.resting = true; return { sound: 'soft' }; }
+      return { sound: 'soft', say: 'Set ' + (st.set + 1) + '.' };
     }
+    st.last = st.ex; st.ex = -1;
+    if (!leftCount(S)) return enterSection(state.sec + 1);
+    if (withRest) st.resting = true;
+    return { sound: 'change', say: ex.say + ' done. Pick your next machine.', flash: true };
   }
+  function setDone() { cue(completeSet(true)); }
+  function pickExercise(i) {
+    const S = cur(); if (S.type !== 'strength' || state.status === 'done') return;
+    const st = state.str, ex = S.exercises[i];
+    if (doneOf(i) >= ex.sets) { toast(ex.name + ' IS DONE ✓', 1500); return; }
+    st.ex = i; st.set = doneOf(i); st.resting = false; st.rest = 0;
+    const n = ex.sets - st.set;
+    cue({ sound: 'change', say: ex.say + '. ' + n + (n > 1 ? ' sets' : ' set') + ' of ' + ex.reps.replace('–', ' to ') + '.' });
+  }
+  function backToMachines() { state.str.ex = -1; beep('soft'); }
   function skipRest() { state.str.resting = false; state.str.rest = 0; beep('go'); }
 
   function onPrimary() {
@@ -1486,12 +1586,13 @@ svg { display: block; flex: none; }
       case 'paused': resume(); break;
       case 'waiting': startCardio(); break;
       case 'running':
-        if (S.type === 'strength') { if (state.str.resting) skipRest(); else setDone(); }
+        if (S.type === 'strength' && state.str.ex >= 0) { if (state.str.resting) skipRest(); else setDone(); }
         else pause();
         break;
     }
   }
 
+  let skipArmed = 0;
   function goNext() {
     if (state.status === 'done') return;
     const S = cur();
@@ -1500,10 +1601,14 @@ svg { display: block; flex: none; }
       state.status = 'running'; state.lastTick = Date.now();
       c = enterSection(state.sec + 1);
     } else if (S.type === 'strength') {
-      const st = state.str; st.resting = false; st.rest = 0;
-      if (st.set < S.exercises[st.ex].sets - 1) { st.set++; c = { sound: 'soft', say: 'Set ' + (st.set + 1) + '.' }; }
-      else if (st.ex < S.exercises.length - 1) { st.ex++; st.set = 0; c = { sound: 'change', say: 'Next exercise: ' + S.exercises[st.ex].say + '.', flash: true }; }
-      else c = enterSection(state.sec + 1);
+      const st = state.str;
+      if (st.ex >= 0) c = completeSet(false);          // count this set, no rest
+      else {
+        const left = leftCount(S);                      // machine list: go on to the bike (asks first if some are left)
+        if (left && Date.now() - skipArmed > 3500) { skipArmed = Date.now(); toast(left + ' NOT DONE — TAP NEXT AGAIN FOR THE BIKE', 3000); return; }
+        skipArmed = 0; st.resting = false; st.rest = 0;
+        c = enterSection(state.sec + 1);
+      }
     } else {
       const i = stepIdx(S, state.pos);
       if (i < S.steps.length - 1) { state.pos = S.starts[i + 1]; c = stepCue(S.steps[i + 1]); }
@@ -1521,10 +1626,13 @@ svg { display: block; flex: none; }
       c = gotoSectionEnd(state.sec - 1);
     } else if (S.type === 'strength') {
       const st = state.str; st.resting = false; st.rest = 0;
-      if (st.set > 0) st.set--;
-      else if (st.ex > 0) { st.ex--; st.set = S.exercises[st.ex].sets - 1; }
-      else { cue(gotoSectionEnd(state.sec - 1)); return; }
-      c = { sound: 'soft', say: strengthSay(S, false) };
+      if (st.ex >= 0) {                                  // undo a set, or back to the list
+        if (doneOf(st.ex) > 0) { st.done[st.ex]--; st.set = st.done[st.ex]; c = { sound: 'soft', say: 'Set ' + (st.set + 1) + '.' }; }
+        else { st.ex = -1; c = { sound: 'soft' }; }
+      } else if (st.last >= 0 && doneOf(st.last) > 0) {   // undo the machine you just finished
+        st.ex = st.last; st.last = -1; st.done[st.ex]--; st.set = st.done[st.ex];
+        c = { sound: 'soft', say: 'Undo. ' + strengthSay(S, false) };
+      } else { cue(gotoSectionEnd(state.sec - 1)); return; }
     } else {
       const i = stepIdx(S, state.pos);
       if (i > 0) { state.pos = S.starts[i - 1]; c = { sound: 'soft', say: S.steps[i - 1].say }; }
@@ -1550,7 +1658,7 @@ svg { display: block; flex: none; }
   }
   function setPlan() {
     SECS = buildPlan(state.w, state.focus);
-    buildBar(); stripFor = -1; titleFor = '';
+    buildBar(); buildTiles(); stripFor = -1; titleFor = '';
     el.sTip.innerHTML = SECS.find(S => S.type === 'strength').tip;
     setText(el.planTotal, '/ ' + mmss(planTotal()));
   }
@@ -1589,7 +1697,7 @@ svg { display: block; flex: none; }
 
   /* ---------- Weight memory ---------- */
   const wStep = () => (unit === 'kg' ? 2.5 : 5);
-  function curEx() { const S = cur(); return S.type === 'strength' ? S.exercises[state.str.ex] : null; }
+  function curEx() { const S = cur(); return S.type === 'strength' && state.str.ex >= 0 ? S.exercises[state.str.ex] : null; }
   const wKey = ex => state.w + ':' + ex.name;
   function fmtW(v) { return v == null ? '—' : String(Math.round(v * 10) / 10); }
   function changeWeight(dir) {
@@ -1662,7 +1770,8 @@ svg { display: block; flex: none; }
     vTimed: $('vTimed'), tMeta: $('tMeta'), tLabel: $('tLabel'), tHrLabel: $('tHrLabel'), tHr: $('tHr'), tHrNum: $('tHrNum'),
     tSub: $('tSub'), tChips: $('tChips'), tStrip: $('tStrip'), tRem: $('tRem'), tGoal: $('tGoal'), tCue: $('tCue'),
     hrIn: $('hrIn'), hrVal: $('hrVal'), hrStat: $('hrStat'),
-    vStr: $('vStr'), sIdx: $('sIdx'), sPace: $('sPace'), sName: $('sName'), sNote: $('sNote'), sReps: $('sReps'), sSetRow: $('sSetRow'),
+    vPick: $('vPick'), pDone: $('pDone'), pPace: $('pPace'), tiles: $('tiles'), sBack: $('sBack'), nextPre: $('nextPre'),
+    vStr: $('vStr'), sPace: $('sPace'), sName: $('sName'), sNote: $('sNote'), sReps: $('sReps'), sSetRow: $('sSetRow'),
     sDots: $('sDots'), sSet: $('sSet'), sRest: $('sRest'), sRestT: $('sRestT'), sRestK: $('sRestK'),
     wVal: $('wVal'), wUnit: $('wUnit'), wLast: $('wLast'), sTip: $('sTip'),
     vReady: $('vReady'), rK: $('rK'), rBoxes: $('rBoxes'), rNote: $('rNote'), rCue: $('rCue'),
@@ -1673,7 +1782,7 @@ svg { display: block; flex: none; }
     chooser: $('chooser'), focusSeg: $('focusSeg'), focusNote: $('focusNote'), lastDone: $('lastDone'),
     tArt: $('tArt'), sArt: $('sArt'), rArt: $('rArt'),
     howto: $('howto'), hArt: $('hArt'), hName: $('hName'), hNote: $('hNote'), hTips: $('hTips'),
-    sound: $('sound'), vList: $('vList'), voiceSeg: $('voiceSeg'), rateSeg: $('rateSeg'), volSeg: $('volSeg'), musicGrid: $('musicGrid'), musicNote: $('musicNote'),
+    sound: $('sound'), vList: $('vList'), voiceSeg: $('voiceSeg'), rateSeg: $('rateSeg'), volRange: $('volRange'), volPct: $('volPct'), nextSong: $('nextSong'), musicGrid: $('musicGrid'), musicNote: $('musicNote'),
     pad: $('pad'), padTitle: $('padTitle'), padSub: $('padSub'), padDisp: $('padDisp'), padVal: $('padVal'), padUnit: $('padUnit'), keyDot: $('keyDot'),
   };
 
@@ -1688,6 +1797,22 @@ svg { display: block; flex: none; }
       seg.style.setProperty('--c', 'var(--c-' + S.id + ')');
       const i = document.createElement('i'); seg.appendChild(i); el.bar.appendChild(seg);
       return i;
+    });
+  }
+
+  // Machine tiles for the strength list
+  let tileEls = [];
+  function buildTiles() {
+    const S = SECS.find(X => X.type === 'strength');
+    el.tiles.innerHTML = '';
+    el.tiles.classList.toggle('c4', S.exercises.length > 6);
+    tileEls = S.exercises.map((ex, i) => {
+      const b = document.createElement('button');
+      b.className = 'tile'; b.dataset.i = i;
+      b.innerHTML = '<span class="art tico">' + (ART[ex.img] || '') + '</span><span class="tname"></span><span class="tstat"></span><span class="tchk">✓</span>';
+      b.querySelector('.tname').textContent = ex.short || ex.name;
+      el.tiles.appendChild(b);
+      return { b: b, stat: b.querySelector('.tstat') };
     });
   }
 
@@ -1776,7 +1901,10 @@ svg { display: block; flex: none; }
     // Stage card
     const waiting = st === 'waiting';
     show(el.vReady, waiting);
-    show(el.vStr, !waiting && S.type === 'strength');
+    const picking = S.type === 'strength' && state.str.ex < 0;
+    show(el.vStr, !waiting && S.type === 'strength' && !picking);
+    show(el.vPick, !waiting && picking);
+    let nextPre = 'NEXT';
     show(el.vTimed, !waiting && S.type === 'timed');
     let peak = false, dense = false, nextText;
 
@@ -1849,17 +1977,34 @@ svg { display: block; flex: none; }
         nextText = n.hr ? (n.peak ? 'PEAK ' : '') + n.hr + ' BPM' : (n.short || n.label);
       } else nextText = state.sec < SECS.length - 1 ? (SECS[state.sec + 1].short || SECS[state.sec + 1].title) : 'FINISH';
     } else {
-      const s = state.str, ex = S.exercises[s.ex];
-      setText(el.sIdx, 'EXERCISE ' + (s.ex + 1) + ' OF ' + S.exercises.length);
+      const s = state.str;
       // Pace: strength minutes spread evenly over all sets
       const perSet = S.duration / S.totalSets;
-      const pos = S.setStarts[s.ex] + s.set;
+      const pos = setsDone(S);
       let pace = 'ON PACE', behind = false;
       if (s.elapsed > (pos + 1) * perSet + 10) { pace = mss(s.elapsed - (pos + 1) * perSet) + ' BEHIND'; behind = true; }
       else if (s.elapsed < pos * perSet - 10) pace = mss(pos * perSet - s.elapsed) + ' AHEAD';
+      dense = true;
+      const restText = () => s.rest >= S.restReady ? 'READY WHEN\nYOU ARE' : 'REST\nTHEN SET ' + (s.set + 1);
+      if (picking) {
+        const fin = S.exercises.filter((e, i) => doneOf(i) >= e.sets).length;
+        setText(el.pDone, fin + ' OF ' + S.exercises.length + ' DONE');
+        // While resting, the header shows the rest countdown instead of the pace
+        const ready = s.rest >= S.restReady;
+        setText(el.pPace, s.resting ? (ready ? 'READY · ' : 'REST ') + mss(up(S.rest - s.rest)) : pace);
+        const pc = 'k ' + (s.resting ? 'rpill' + (ready ? ' ready' : '') : 'pace' + (behind ? ' behind' : ''));
+        if (el.pPace.className !== pc) el.pPace.className = pc;
+        tileEls.forEach((t, i) => {
+          const e = S.exercises[i], d = doneOf(i);
+          const cls = 'tile' + (d >= e.sets ? ' fin' : d > 0 ? ' part' : '');
+          if (t.b.className !== cls) t.b.className = cls;
+          setText(t.stat, d >= e.sets ? 'DONE' : d > 0 ? d + ' / ' + e.sets + ' SETS' : e.sets + ' × ' + e.reps);
+        });
+        nextPre = ''; nextText = fin === S.exercises.length ? (SECS[state.sec + 1].short || SECS[state.sec + 1].title) : 'TAP ANY FREE MACHINE';
+      } else {
+      const ex = S.exercises[s.ex];
       setText(el.sPace, pace);
       el.sPace.classList.toggle('behind', behind);
-      dense = true;
       setHTML(el.sArt, ART[ex.img] || '');
       setText(el.sName, ex.name);
       el.sName.classList.toggle('long', ex.name.length > 14);
@@ -1869,7 +2014,7 @@ svg { display: block; flex: none; }
       if (s.resting) {
         const ready = s.rest >= S.restReady;
         setText(el.sRestT, mss(up(S.rest - s.rest)));
-        setText(el.sRestK, ready ? 'READY WHEN\nYOU ARE' : 'REST\nTHEN SET ' + (s.set + 1));
+        setText(el.sRestK, restText());
         el.sRest.classList.toggle('ready', ready);
       } else {
         let dots = '';
@@ -1882,10 +2027,13 @@ svg { display: block; flex: none; }
       setText(el.wVal, fmtW(w));
       setText(el.wUnit, unit);
       setText(el.wLast, lw != null ? 'LAST TIME ' + fmtW(lw) + ' ' + unit : (w == null ? 'TAP + TO SET WEIGHT' : 'WEIGHT SAVED'));
-      nextText = s.ex < S.exercises.length - 1 ? S.exercises[s.ex + 1].name : (SECS[state.sec + 1].short || SECS[state.sec + 1].title);
+      const others = leftCount(S) - (doneOf(s.ex) < ex.sets ? 1 : 0);
+      nextText = others > 0 ? 'MACHINE LIST · ' + others + ' LEFT' : (SECS[state.sec + 1].short || SECS[state.sec + 1].title);
+      }
     }
     el.card.classList.toggle('peak', peak && st !== 'idle');
     el.card.classList.toggle('dense', dense);
+    setText(el.nextPre, nextPre);
     setText(el.nextText, nextText);
 
     // Controls
@@ -1894,11 +2042,11 @@ svg { display: block; flex: none; }
     if (st === 'idle') label = 'START WORKOUT';
     else if (st === 'paused') label = 'RESUME';
     else if (st === 'waiting') label = 'START CARDIO';
-    else if (strength) { if (state.str.resting) { label = 'SKIP REST'; go = false; } else label = '✓ SET DONE'; }
+    else if (strength && state.str.ex >= 0) { if (state.str.resting) { label = 'SKIP REST'; go = false; } else label = '✓ SET DONE'; }
     else { label = 'PAUSE'; go = false; }
     setText(el.primary, label);
     el.primary.classList.toggle('go', go);
-    show(el.pauseSq, st === 'running' && strength);
+    show(el.pauseSq, st === 'running' && strength && state.str.ex >= 0);
     const atStart = state.sec === 0 && state.pos === 0;
     el.prevBtn.disabled = atStart && st !== 'waiting';
     const idle = st === 'idle';
@@ -1973,7 +2121,7 @@ svg { display: block; flex: none; }
   $('cardB').addEventListener('click', () => { unlock(); chooseWorkout('B'); });
 
   // No scrolling, pinch-zoom or long-press menus
-  document.addEventListener('touchmove', e => { if (!e.target.closest('.scroll')) e.preventDefault(); }, { passive: false });
+  document.addEventListener('touchmove', e => { if (!e.target.closest('.scroll, input[type=range]')) e.preventDefault(); }, { passive: false });
   document.addEventListener('gesturestart', e => e.preventDefault());
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('pointerdown', () => { unlock(); keepAwake(); }, true);
@@ -1991,8 +2139,12 @@ svg { display: block; flex: none; }
     calm: 'Soft, slow background. Made live on your phone — no internet needed.',
     lofi: 'Relaxed beat for steady work. Gets quieter while the coach talks.',
     energy: 'Upbeat for effort. Gets quieter while the coach talks.',
+    groove: 'Steady house beat. Gets quieter while the coach talks.',
+    drive: 'Retro synth drive. Gets quieter while the coach talks.',
     auto: 'Follows the workout: <b>calm</b> for mobility & cool-down, <b>lo-fi</b> for warm-up & strength, <b>energy</b> for cardio.',
+    mix: 'Plays <b>lo-fi, groove, energy and drive</b> in turn — a new track every 2½ minutes, then round again.',
   };
+  const TRACK_NAMES = { lofi: 'LO-FI', groove: 'GROOVE', energy: 'ENERGY', drive: 'DRIVE' };
   function renderVoices() {
     const box = el.vList;
     box.innerHTML = '';
@@ -2025,11 +2177,13 @@ svg { display: block; flex: none; }
     const mark = (box, attr, val) => [...box.children].forEach(b => b.classList.toggle('on', b.dataset[attr] === String(val)));
     mark(el.voiceSeg, 'v', voiceOn ? 1 : 0);
     mark(el.rateSeg, 'r', sound.rate);
-    mark(el.volSeg, 'vol', sound.vol);
+    renderVol();
     mark(el.musicGrid, 'm', sound.music);
     let note = MUSIC_NOTES[sound.music] || '';
-    if (sound.music === 'mine') note = Music.hasFile() ? '♫ <b>' + Music.fileName().replace(/[<>&]/g, '') + '</b> · tap MY MUSIC again to change' : 'Choose a song file saved on your iPhone.';
+    if (sound.music === 'mine') note = Music.hasFile() ? '♫ <b>' + Music.fileName().replace(/[<>&]/g, '') + '</b> · song ' + Music.songInfo() + ' · tap MY MUSIC again to choose new songs' : 'Choose one or more song files saved on your iPhone — they play in turn.';
+    if (sound.music === 'mix' && TRACK_NAMES[Music.style]) note = 'Now playing <b>' + TRACK_NAMES[Music.style] + '</b> · ' + note;
     setHTML(el.musicNote, note);
+    show(el.nextSong, sound.music === 'mix' || (sound.music === 'mine' && Music.hasFile()));
     markVoices();
   }
   function openSound() {
@@ -2060,9 +2214,17 @@ svg { display: block; flex: none; }
     enVoice = (sound.voice !== 'auto' && voices.find(v => v.voiceURI === sound.voice)) || voices[0] || null;
     markVoices(); speak(SAMPLE, true);
   });
-  el.volSeg.addEventListener('click', e => {
-    const b = e.target.closest('button'); if (!b) return;
-    unlock(); sound.vol = +b.dataset.vol; saveSound(); renderSound(); syncMusic();
+  function renderVol() {
+    el.volRange.value = sound.mvol;
+    el.volRange.style.setProperty('--p', sound.mvol + '%');
+    setText(el.volPct, sound.mvol + '%');
+  }
+  el.volRange.addEventListener('input', () => { unlock(); sound.mvol = +el.volRange.value; renderVol(); syncMusic(); });
+  el.volRange.addEventListener('change', saveSound);
+  el.nextSong.addEventListener('click', () => {
+    unlock();
+    if (sound.music === 'mix') mixSkip++; else Music.nextFile();
+    syncMusic(); setTimeout(renderSound, 600);
   });
   el.musicGrid.addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
@@ -2072,13 +2234,21 @@ svg { display: block; flex: none; }
     sound.music = m; saveSound(); setSession(); renderSound(); syncMusic();
   });
   $('musicFile').addEventListener('change', e => {
-    const f = e.target.files && e.target.files[0];
+    const list = [...(e.target.files || [])].map(f => ({ blob: f, name: f.name }));
     e.target.value = '';
-    if (!f) return;
-    Music.useFile(f, f.name);
-    if (window.indexedDB) SongStore.put({ blob: f, name: f.name }).catch(() => toast('SONG WILL PLAY THIS TIME ONLY', 2200));
+    if (!list.length) return;
+    Music.useFiles(list);
+    toast(list.length === 1 ? '1 SONG READY' : list.length + ' SONGS READY — THEY PLAY IN TURN', 2000);
+    if (window.indexedDB) SongStore.put(list).catch(() => toast('SONGS WILL PLAY THIS TIME ONLY', 2200));
     sound.music = 'mine'; saveSound(); setSession(); renderSound(); syncMusic();
   });
+
+  /* ---------- Machine list ---------- */
+  el.tiles.addEventListener('click', e => {
+    const t = e.target.closest('.tile'); if (!t) return;
+    unlock(); pickExercise(+t.dataset.i); afterAction();
+  });
+  el.sBack.addEventListener('click', () => { unlock(); backToMachines(); afterAction(); });
 
   /* ---------- Machine how-to ---------- */
   function openHowto(img, name, note) {
