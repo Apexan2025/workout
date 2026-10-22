@@ -35,8 +35,6 @@
   --pad: 16px;
 }
 /* Workout B: same layout, violet-tinted surfaces so it is recognisable at a glance */
-html[data-w="B"] { --bg: #0D0B14; --surface: #17141F; --surface2: #231F2F; --line: #2E2940; }
-html[data-w="B"] .wname { color: var(--b); }
 
 #app[data-sec="warmup"]   { --accent: var(--c-warmup); }
 #app[data-sec="mobility"] { --accent: var(--c-mobility); }
@@ -273,16 +271,9 @@ svg { display: block; flex: none; }
   gap: clamp(4px, 1vh, 10px); text-align: left; padding: 14px 20px; border-radius: 24px;
   background: #14181E; border: 2px solid #262C36;
 }
-.wcard.b { background: #17141F; border-color: #2E2940; }
-.wcard.due { border-color: var(--text); }
 .wcard:active { filter: brightness(1.2); }
-.wc-top { display: flex; align-items: center; justify-content: space-between; }
-.wc-letter { font-size: clamp(40px, 7vh, 60px); font-weight: 800; line-height: 1; }
-.wcard.b .wc-letter { color: var(--b); }
-.wc-due { font-size: 13px; font-weight: 800; letter-spacing: .12em; padding: 6px 10px; border-radius: 8px; background: var(--ok); color: #06210F; }
-.wc-name { font-size: clamp(21px, 3.6vh, 30px); font-weight: 800; letter-spacing: .02em; line-height: 1.15; }
+.wc-name { font-size: clamp(26px, 4.6vh, 38px); font-weight: 800; letter-spacing: .02em; line-height: 1.15; }
 .wc-hl { font-size: clamp(14px, 2.2vh, 17px); font-weight: 800; letter-spacing: .04em; }
-.wcard.b .wc-hl { color: var(--b); }
 .wc-split { font-size: clamp(14px, 2.2vh, 17px); font-weight: 700; color: var(--muted); letter-spacing: .04em; }
 .clast { text-align: center; font-size: 13px; font-weight: 800; letter-spacing: .1em; color: var(--dim); min-height: 16px; }
 
@@ -379,14 +370,22 @@ svg { display: block; flex: none; }
 .k.rpill { font-size: clamp(16px, 2.6vh, 22px); color: var(--accent); font-variant-numeric: tabular-nums; letter-spacing: .06em; }
 .k.rpill.ready { color: var(--ok); }
 .tiles { flex: 1 1 auto; min-height: 0; width: 100%; display: grid; gap: 8px; grid-template-columns: repeat(3, 1fr); grid-auto-rows: minmax(0, 1fr); }
-.tiles.c4 { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.tiles.main { flex: 1 1 0; }
+.tiles.x { flex: 0 0 auto; height: clamp(50px, 9.5vh, 80px); grid-template-columns: repeat(4, 1fr); gap: 6px; }
+/* on the machine list the tiles get the room: no hint line, shorter main button */
+.picking .next { display: none; }
+.picking .btn.primary { height: clamp(52px, 7.5vh, 66px); font-size: clamp(18px, 2.8vh, 24px); }
+.tiles.x .tstat { display: none; }
+.xlab { align-self: flex-start; font-size: 12px; }
+.k.alldone { color: var(--ok); }
+.timer.small.xs { font-size: clamp(36px, min(14vw, 6.8vh), 72px); }
 .tile {
   position: relative; min-height: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 3px; padding: 6px 4px; border-radius: 16px; background: var(--surface2); border: 2px solid transparent;
 }
 .tile:active { filter: brightness(1.25); }
 .tico { flex: 1 1 auto; min-height: 0; width: 100%; max-width: 76px; }
-.tname { font-size: clamp(11px, 1.6vh, 13px); font-weight: 800; letter-spacing: .02em; line-height: 1.15; text-align: center; }
+.tname { font-size: clamp(11px, 1.6vh, 13px); font-weight: 800; letter-spacing: .02em; line-height: 1.15; text-align: center; white-space: nowrap; }
 .tstat { font-size: clamp(10px, 1.4vh, 12px); font-weight: 800; letter-spacing: .04em; color: var(--muted); white-space: nowrap; }
 .tile.part { border-color: var(--accent); }
 .tile.part .tstat { color: var(--accent); }
@@ -397,9 +396,10 @@ svg { display: block; flex: none; }
 .tile.fin .tchk { display: block; }
 
 /* Machine icons on the workout cards */
-.wc-icons { display: flex; gap: 4px; color: var(--c-strength); }
-.wcard.b .wc-icons { color: var(--b); }
-.wc-icons span { width: 30px; height: 30px; }
+.wc-icons { display: flex; flex-wrap: wrap; gap: 6px; color: var(--c-strength); }
+.wc-icons span { width: clamp(30px, 5.4vh, 44px); height: clamp(30px, 5.4vh, 44px); }
+.wc-icons span.xi { opacity: .5; }
+.wc-go { align-self: flex-start; margin-top: 4px; padding: 12px 18px; border-radius: 14px; background: var(--c-strength); color: var(--bg); font-size: 17px; font-weight: 800; letter-spacing: .06em; }
 
 /* ---------- Alerts ---------- */
 #flash { position: fixed; inset: 0; z-index: 9; pointer-events: none; border: 12px solid var(--accent); opacity: 0; }
@@ -441,7 +441,7 @@ svg { display: block; flex: none; }
   .setrow, .rest { min-height: 30px; }
   .wbtn { width: 46px; height: 46px; }
 }
-@media (max-height: 740px) { .wc-icons { display: none; } }
+@media (max-height: 560px) { .wc-icons { display: none; } }
 @media (max-height: 720px) { .art.mini { display: none; } }
 @media (max-height: 600px) {
   .tstat { display: none; }
@@ -493,7 +493,9 @@ svg { display: block; flex: none; }
     <!-- Strength: pick any free machine -->
     <div class="v vpick" id="vPick" hidden>
       <div class="phead"><span class="k" id="pDone">0 OF 6 DONE</span><span class="k pace" id="pPace">ON PACE</span></div>
-      <div class="tiles" id="tiles"></div>
+      <div class="tiles main" id="tiles"></div>
+      <div class="k xlab" id="xlab">EXTRAS · IF YOU HAVE TIME</div>
+      <div class="tiles x" id="xtiles"></div>
     </div>
 
     <!-- Strength: the machine you picked -->
@@ -571,7 +573,7 @@ svg { display: block; flex: none; }
     <div class="top">
       <div>
         <div class="wname">WORKOUT COACH · 60 MIN</div>
-        <div class="ctitle">CHOOSE WORKOUT</div>
+        <div class="ctitle">YOUR WORKOUT</div>
       </div>
       <button class="iconbtn" id="chSound" aria-label="Sound settings">🔊</button>
     </div>
@@ -582,18 +584,11 @@ svg { display: block; flex: none; }
     </div>
     <div class="fnote"><div id="focusNote">YOUR STANDARD PLAN</div><span>SAME HEART-RATE TARGETS · ALWAYS 60 MIN</span></div>
     <button class="wcard" id="cardA" data-w="A">
-      <div class="wc-top"><span class="wc-letter">A</span><span class="wc-due" id="dueA" hidden>NEXT UP</span></div>
       <div class="wc-name">FULL BODY + BIKE</div>
       <div class="wc-hl" id="hlA"></div>
       <div class="wc-icons art" id="iconsA"></div>
       <div class="wc-split" id="splitA"></div>
-    </button>
-    <button class="wcard b" id="cardB" data-w="B">
-      <div class="wc-top"><span class="wc-letter">B</span><span class="wc-due" id="dueB" hidden>NEXT UP</span></div>
-      <div class="wc-name">FULL BODY + BIKE</div>
-      <div class="wc-hl" id="hlB"></div>
-      <div class="wc-icons art" id="iconsB"></div>
-      <div class="wc-split" id="splitB"></div>
+      <div class="wc-go">OPEN WORKOUT ›</div>
     </button>
     <div class="clast" id="lastDone"></div>
   </section>
@@ -727,6 +722,10 @@ svg { display: block; flex: none; }
         pa('m', 'M30 30Q58 14 76 38') + ln('pad', 76, 42, 78, 60) +
         pa('p', 'M41 90Q42 66 58 55') + pl('p', '54,60 66,63 71,55') + pl('p', '41,90 66,92 68,108') + head(65, 48) +
         arrow(88, 22, 104, 42)),
+      dbrow: svg(floor +
+        ln('pad', 14, 82, 44, 82) + ln('m', 18, 87, 18, 110) + ln('m', 40, 87, 40, 110) +
+        pl('p', '42,48 74,58') + pl('p', '42,50 30,76') + pl('p', '74,58 84,82 82,106') + pl('p', '50,52 52,84') + head(32, 41) +
+        dbH(52, 88) + arrow(104, 100, 104, 74)),
       goblet: svg(floor +
         ln('pad', 14, 88, 34, 88) + ln('m', 18, 93, 18, 110) + ln('m', 30, 93, 30, 110) +
         pl('p', '40,80 50,50') + pl('p', '40,80 66,80 62,106') + pl('p', '50,54 62,68 64,56') + head(48, 37) +
@@ -749,6 +748,7 @@ svg { display: block; flex: none; }
 
   // Form tips shown when you tap a machine picture
   const HOWTO = {
+    dbrow: ['One hand and knee on a bench, back flat', 'Pull the dumbbell up to your hip', 'Lower slowly — then switch arms'],
     legpress: ['Sit back, feet hip-width and flat on the platform', 'Lower until your knees are about 90°', 'Push through your heels — don’t lock your knees'],
     chestpress: ['Handles level with the middle of your chest', 'Press forward smoothly, elbows soft at the end', 'Keep your shoulders down and back'],
     latpulldown: ['Thighs snug under the pad', 'Pull the bar to your upper chest', 'Lead with your elbows — don’t lean far back'],
@@ -762,88 +762,9 @@ svg { display: block; flex: none; }
   };
 
   const LIBRARY = {
-    /* ---------------- WORKOUT A · FULL BODY + BIKE ---------------- */
+    /* ---------------- FULL BODY + BIKE — one workout, done twice a week ---------------- */
     A: {
-      name: 'WORKOUT A', type: 'FULL BODY + BIKE', highlights: '6 EXERCISES · LEG PRESS, SQUAT, PRESS',
-      sections: [
-        {
-          id: 'warmup', icon: '🚴', title: 'BIKE WARM-UP', type: 'timed', img: 'bike', showArt: true,
-          goal: '<b>GOAL:</b> Warm up your legs and prepare your heart.',
-          enterSay: 'Bike warm-up. Easy pace.',
-          steps: [
-            { dur: 120, meta: '0–2 MIN', label: 'EASY PACE', say: 'Easy pace.' },
-            { dur: 180, meta: '2–5 MIN', label: 'GRADUALLY INCREASE RESISTANCE', short: 'INCREASE RESISTANCE', say: 'Gradually increase resistance.' },
-            { dur: 120, meta: '5–7 MIN', hr: '110–115', sub: 'EASY · YOU CAN STILL CHAT', say: 'Target heart rate 110 to 115 beats per minute.' },
-          ],
-        },
-        {
-          id: 'mobility', icon: '🔄', title: 'MOBILITY', type: 'timed',
-          goal: '<b>GOAL:</b> Feel warm, loose and ready — not tired.',
-          cue: 'MOVE SMOOTHLY • NO BOUNCING',
-          enterSay: 'Warm-up complete. Mobility. Shoulder rotations.',
-          steps: [
-            { dur: 60, meta: 'MOVE 1 OF 5', label: 'SHOULDER ROTATIONS', say: 'Shoulder rotations.' },
-            { dur: 60, meta: 'MOVE 2 OF 5', label: 'HIP CIRCLES', say: 'Hip circles.' },
-            { dur: 60, meta: 'MOVE 3 OF 5', label: '10 CONTROLLED BODYWEIGHT SQUATS', short: '10 BODYWEIGHT SQUATS', say: 'Ten controlled bodyweight squats.' },
-            { dur: 60, meta: 'MOVE 4 OF 5', label: 'LEG SWINGS', say: 'Leg swings.' },
-            { dur: 60, meta: 'MOVE 5 OF 5', label: 'LIGHT ARM & LEG MOVEMENT', short: 'ARM & LEG MOVEMENT', say: 'Light arm and leg movement.' },
-          ],
-        },
-        {
-          id: 'strength', icon: '🏋️', title: 'FULL-BODY STRENGTH', type: 'strength',
-          minutes: { balanced: 22, machines: 30 }, rest: 60, restReady: 45,
-          enterSay: 'Mobility complete. Strength training.',
-          tip: TIP,
-          exercises: [
-            { name: 'GOBLET SQUAT', img: 'goblet', note: 'DUMBBELL AT CHEST', reps: '10–12', sets: SETS(2, 3), say: 'Dumbbell goblet squat' },
-            { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 3), say: 'Chest press' },
-            { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '10–12', sets: SETS(2, 3), say: 'Lat pulldown' },
-            { name: 'SEATED LEG PRESS', short: 'LEG PRESS', img: 'legpress', reps: '10–12', sets: SETS(2, 3), say: 'Seated leg press' },
-            { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 3), say: 'Leg curl' },
-            { name: 'DUMBBELL SHOULDER PRESS', short: 'SHOULDER PRESS', img: 'dbpress', note: 'SEATED ON A BENCH', reps: '8–10', sets: SETS(2, 3), say: 'Dumbbell shoulder press' },
-          ],
-        },
-        {
-          id: 'cardio', icon: '❤️', title: 'CARDIO BIKE', type: 'timed', img: 'bike', cardio: true, waitForTap: true, manualHr: true, smallTimer: true,
-          hrLabel: 'CURRENT TARGET HR',
-          goal: 'BIKE PROGRAM: <b>CARDIO</b> · TARGET HR <b>132</b>',
-          ready: {
-            k: 'SET UP THE BIKE · {min} MIN',
-            boxes: [['PROGRAM', 'CARDIO'], ['TARGET HR', '132']],
-            note: 'Change resistance <b>gradually</b>. 132 is a short <b>peak</b> (minute {peak}). <b>Stop</b> if you feel chest pain or dizziness.',
-            cue: 'START THE BIKE, THEN TAP START CARDIO',
-          },
-          readySay: 'Strength complete. Set up the bike. Program cardio, target heart rate 132, {min} minutes. Tap start cardio when the bike starts.',
-          enterSay: 'Cardio. Target 105 to 115 beats per minute.',
-          steps: [
-            { hr: '105–115', lo: 105, hi: 115, sub: 'EASY → MODERATE', say: 'Target 105 to 115 beats per minute.' },
-            { hr: '115–120', lo: 115, hi: 120, sub: 'MODERATE', say: 'Next interval: 115 to 120 beats per minute.' },
-            { hr: '120–125', lo: 120, hi: 125, sub: 'MODERATE → MODERATELY HARD', say: 'Next interval: 120 to 125 beats per minute.' },
-            { hr: '128–132', lo: 128, hi: 132, sub: 'BUILD', say: 'Next interval: 128 to 132 beats per minute.' },
-            { hr: '~132', lo: 128, hi: 134, peak: true, sub: 'STAY CONTROLLED', say: 'Peak interval. Target 132 beats per minute.' },
-            { label: 'REDUCE RESISTANCE', sub: 'EASY PACE • LET YOUR HR COME DOWN', say: 'Peak complete. Reduce resistance.' },
-          ],
-        },
-        {
-          id: 'cool', icon: '🧘', title: 'COOL DOWN', type: 'timed',
-          goal: '<b>GOAL:</b> Finish feeling refreshed — not exhausted.',
-          cue: 'BREATHE SLOWLY • STRETCH GENTLY',
-          enterSay: 'Cardio complete. Cool down. Easy walking or cycling.',
-          steps: [
-            { dur: 120, meta: 'FIRST 2 MIN', label: 'EASY WALKING OR CYCLING', say: 'Easy walking or cycling.' },
-            { dur: 48, meta: 'STRETCH 1 OF 5', label: 'QUADRICEPS', sides: true, say: 'Stretch. Quadriceps.' },
-            { dur: 48, meta: 'STRETCH 2 OF 5', label: 'HAMSTRINGS', sides: true, say: 'Hamstrings.' },
-            { dur: 48, meta: 'STRETCH 3 OF 5', label: 'CALVES', sides: true, say: 'Calves.' },
-            { dur: 48, meta: 'STRETCH 4 OF 5', label: 'CHEST', say: 'Chest.' },
-            { dur: 48, meta: 'STRETCH 5 OF 5', label: 'SHOULDERS', sides: true, say: 'Shoulders.' },
-          ],
-        },
-      ],
-    },
-
-    /* ---------------- WORKOUT B · FULL BODY + BIKE ---------------- */
-    B: {
-      name: 'WORKOUT B', type: 'FULL BODY + BIKE', highlights: '7 EXERCISES · LEGS, CALVES, ABS',
+      name: 'FULL BODY + BIKE', type: 'FULL BODY + BIKE', highlights: '6 MAIN MACHINES + 4 EXTRAS',
       sections: [
         {
           id: 'warmup', icon: '🚴', title: 'BIKE WARM-UP', type: 'timed', img: 'bike', showArt: true,
@@ -870,17 +791,22 @@ svg { display: block; flex: none; }
         },
         {
           id: 'strength', icon: '🏋️', title: 'FULL-BODY STRENGTH', type: 'strength',
-          minutes: { balanced: 23, machines: 31 }, rest: 60, restReady: 45,
+          minutes: { balanced: 22, machines: 30 }, rest: 60, restReady: 45,
           enterSay: 'Mobility complete. Strength training.',
           tip: TIP,
           exercises: [
-            { name: 'LEG EXTENSION', img: 'legext', reps: '10–12', sets: SETS(2, 3), say: 'Leg extension' },
-            { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 3), say: 'Chest press' },
+            // main machines — every session
             { name: 'SEATED LEG PRESS', short: 'LEG PRESS', img: 'legpress', reps: '10–12', sets: SETS(2, 3), say: 'Seated leg press' },
+            { name: 'CHEST PRESS', img: 'chestpress', reps: '10–12', sets: SETS(2, 3), say: 'Chest press' },
+            { name: 'LAT PULLDOWN', short: 'PULLDOWN', img: 'latpulldown', reps: '10–12', sets: SETS(2, 3), say: 'Lat pulldown' },
             { name: 'LEG CURL', img: 'legcurl', reps: '10–12', sets: SETS(2, 3), say: 'Leg curl' },
-            { name: 'LAT PULLDOWN', img: 'latpulldown', reps: '8–12', sets: SETS(2, 3), say: 'Lat pulldown' },
-            { name: 'DUMBBELL CALF RAISE', short: 'CALF RAISE', img: 'dbcalf', note: 'DUMBBELLS AT SIDES', reps: '12–15', sets: SETS(2, 2), say: 'Dumbbell calf raise' },
-            { name: 'ABDOMINAL MACHINE', short: 'ABS MACHINE', img: 'abs', reps: '10–15', sets: SETS(2, 2), say: 'Abdominal machine' },
+            { name: 'DUMBBELL SHOULDER PRESS', short: 'SHOULDERS', img: 'dbpress', note: 'SEATED ON A BENCH', reps: '8–10', sets: SETS(2, 3), say: 'Dumbbell shoulder press' },
+            { name: 'ABDOMINAL MACHINE', short: 'ABS', img: 'abs', reps: '10–15', sets: SETS(2, 2), say: 'Abdominal machine' },
+            // extras — if there is time or a main machine is busy
+            { name: 'GOBLET SQUAT', short: 'SQUAT', img: 'goblet', note: 'DUMBBELL AT CHEST', reps: '10–12', sets: SETS(2, 2), say: 'Dumbbell goblet squat', extra: true },
+            { name: 'LEG EXTENSION', short: 'LEG EXT', img: 'legext', reps: '10–12', sets: SETS(2, 2), say: 'Leg extension', extra: true },
+            { name: 'DUMBBELL CALF RAISE', short: 'CALVES', img: 'dbcalf', note: 'DUMBBELLS AT SIDES', reps: '12–15', sets: SETS(2, 2), say: 'Dumbbell calf raise', extra: true },
+            { name: 'DUMBBELL ROW', short: 'ROW', img: 'dbrow', note: 'EACH ARM · ON A BENCH', reps: '10–12', sets: SETS(2, 2), say: 'Dumbbell row', extra: true },
           ],
         },
         {
@@ -905,17 +831,17 @@ svg { display: block; flex: none; }
           ],
         },
         {
-          id: 'cool', icon: '🧘', title: 'COOL DOWN', type: 'timed', chips: true,
+          id: 'cool', icon: '🧘', title: 'COOL DOWN', type: 'timed',
           goal: '<b>GOAL:</b> Bring your heart rate down gradually and finish feeling refreshed.',
           cue: 'BREATHE SLOWLY • STRETCH GENTLY',
           enterSay: 'Cardio complete. Cool down. Easy walking or cycling.',
           steps: [
-            { dur: 180, meta: '0–3 MIN', label: 'EASY WALKING OR CYCLING', say: 'Easy walking or cycling.' },
-            { dur: 24, meta: '3–5 MIN · GENTLE STRETCHING', label: 'QUADRICEPS', chip: true, say: 'Gentle stretching. Quadriceps.' },
-            { dur: 24, meta: '3–5 MIN · GENTLE STRETCHING', label: 'HAMSTRINGS', chip: true, quiet: true },
-            { dur: 24, meta: '3–5 MIN · GENTLE STRETCHING', label: 'CALVES', chip: true, quiet: true },
-            { dur: 24, meta: '3–5 MIN · GENTLE STRETCHING', label: 'CHEST', chip: true, quiet: true },
-            { dur: 24, meta: '3–5 MIN · GENTLE STRETCHING', label: 'SHOULDERS', chip: true, quiet: true },
+            { dur: 120, meta: 'FIRST 2 MIN', label: 'EASY WALKING OR CYCLING', say: 'Easy walking or cycling.' },
+            { dur: 48, meta: 'STRETCH 1 OF 5', label: 'QUADRICEPS', sides: true, say: 'Stretch. Quadriceps.' },
+            { dur: 48, meta: 'STRETCH 2 OF 5', label: 'HAMSTRINGS', sides: true, say: 'Hamstrings.' },
+            { dur: 48, meta: 'STRETCH 3 OF 5', label: 'CALVES', sides: true, say: 'Calves.' },
+            { dur: 48, meta: 'STRETCH 4 OF 5', label: 'CHEST', say: 'Chest.' },
+            { dur: 48, meta: 'STRETCH 5 OF 5', label: 'SHOULDERS', sides: true, say: 'Shoulders.' },
           ],
         },
       ],
@@ -932,7 +858,7 @@ svg { display: block; flex: none; }
         S.exercises = src.exercises.map(e => Object.assign({}, e, { sets: e.sets[focus] }));
         S.setStarts = [];
         let n = 0;
-        S.exercises.forEach(e => { S.setStarts.push(n); n += e.sets; });
+        S.exercises.forEach(e => { S.setStarts.push(n); if (!e.extra) n += e.sets; });
         S.totalSets = n;
       } else {
         const steps = src.steps.map(st => Object.assign({}, st));
@@ -974,6 +900,11 @@ svg { display: block; flex: none; }
 
   let voiceOn = load('voice', true);
   let weights = load('weights', {});
+  // A and B were merged into one workout: keep B's saved weights where the merged workout has none
+  if (Object.keys(weights).some(k => k.startsWith('B:'))) {
+    Object.keys(weights).forEach(k => { if (k.startsWith('B:')) { const a = 'A' + k.slice(1); if (weights[a] == null) weights[a] = weights[k]; delete weights[k]; } });
+    store('weights', weights);
+  }
   let unit = load('unit', /-(US|CA)$/i.test(navigator.language || '') ? 'lb' : 'kg');
   let focus = load('focus', 'balanced');
   if (!FOCI[focus]) focus = 'balanced';
@@ -986,11 +917,11 @@ svg { display: block; flex: none; }
   const saveSound = () => store('sound', sound);
   let soundOpen = false;
 
-  function nextUp() { const last = history[history.length - 1]; return last && last.w === 'A' ? 'B' : 'A'; }
+  function nextUp() { return 'A'; }
 
   function freshState(w, f) {
     return {
-      v: 3,
+      v: 4,
       w: w, focus: f,
       status: 'idle',          // idle | running | paused | waiting | done
       sec: 0,                  // current section index
@@ -1006,7 +937,7 @@ svg { display: block; flex: none; }
   }
   function loadState() {
     const s = load('state', null);
-    if (!s || s.v !== 3 || typeof s.savedAt !== 'number' || !LIBRARY[s.w] || !FOCI[s.focus]) return null;
+    if (!s || s.v !== 4 || typeof s.savedAt !== 'number' || !LIBRARY[s.w] || !FOCI[s.focus]) return null;
     if (Date.now() - s.savedAt > STALE_MS) return null;
     if (s.sec < 0 || s.sec >= LIBRARY[s.w].sections.length) return null;
     return s;
@@ -1420,8 +1351,9 @@ svg { display: block; flex: none; }
   /* ---------- Workout engine ---------- */
   // Strength: machines can be done in any order
   const doneOf = i => state.str.done[i] || 0;
-  const leftCount = S => S.exercises.filter((e, i) => doneOf(i) < e.sets).length;
-  const setsDone = S => S.exercises.reduce((a, e, i) => a + Math.min(doneOf(i), e.sets), 0);
+  const leftCount = S => S.exercises.filter((e, i) => !e.extra && doneOf(i) < e.sets).length;     // main machines still to do
+  const extrasLeft = S => S.exercises.filter((e, i) => e.extra && doneOf(i) < e.sets).length;
+  const setsDone = S => S.exercises.reduce((a, e, i) => a + (e.extra ? 0 : Math.min(doneOf(i), e.sets)), 0);
   function strengthSay(S, intro) {
     const st = state.str, pre = intro ? S.enterSay + ' ' : '';
     if (st.ex < 0) return pre + 'Pick any free machine.';
@@ -1563,9 +1495,13 @@ svg { display: block; flex: none; }
       return { sound: 'soft', say: 'Set ' + (st.set + 1) + '.' };
     }
     st.last = st.ex; st.ex = -1;
-    if (!leftCount(S)) return enterSection(state.sec + 1);
     if (withRest) st.resting = true;
-    return { sound: 'change', say: ex.say + ' done. Pick your next machine.', flash: true };
+    if (leftCount(S)) return { sound: 'change', say: ex.say + ' done. Pick your next machine.', flash: true };
+    // all main machines done: offer the extras while there is time, otherwise on to the bike
+    if (extrasLeft(S) && S.duration - st.elapsed > 120)
+      return { sound: 'change', say: ex.say + (ex.extra ? ' done. Another extra, or tap next for the bike.' : ' done. Main machines done. Do an extra, or tap next for the bike.'), flash: true };
+    st.resting = false;
+    return enterSection(state.sec + 1);
   }
   function setDone() { cue(completeSet(true)); }
   function pickExercise(i) {
@@ -1604,8 +1540,8 @@ svg { display: block; flex: none; }
       const st = state.str;
       if (st.ex >= 0) c = completeSet(false);          // count this set, no rest
       else {
-        const left = leftCount(S);                      // machine list: go on to the bike (asks first if some are left)
-        if (left && Date.now() - skipArmed > 3500) { skipArmed = Date.now(); toast(left + ' NOT DONE — TAP NEXT AGAIN FOR THE BIKE', 3000); return; }
+        const left = leftCount(S);                      // machine list: go on to the bike (asks first if main machines are left)
+        if (left && Date.now() - skipArmed > 3500) { skipArmed = Date.now(); toast(left + ' MAIN NOT DONE — TAP NEXT AGAIN FOR THE BIKE', 3000); return; }
         skipArmed = 0; st.resting = false; st.rest = 0;
         c = enterSection(state.sec + 1);
       }
@@ -1677,21 +1613,16 @@ svg { display: block; flex: none; }
   function renderChooser() {
     [...el.focusSeg.children].forEach(b => b.classList.toggle('on', b.dataset.f === focus));
     setText(el.focusNote, FOCI[focus].note);
-    const due = nextUp();
-    ['A', 'B'].forEach(w => {
-      const plan = buildPlan(w, focus);
-      const str = plan.find(S => S.type === 'strength'), car = plan.find(S => S.cardio);
-      setText($('hl' + w), LIBRARY[w].highlights);
-      setHTML($('icons' + w), LIBRARY[w].sections.find(S => S.type === 'strength').exercises.map(e => '<span>' + ART[e.img] + '</span>').join(''));
-      setText($('split' + w), 'STRENGTH ' + str.duration / 60 + ' MIN · BIKE ' + car.duration / 60 + ' MIN');
-      show($('due' + w), w === due);
-      $('card' + w).classList.toggle('due', w === due);
-    });
+    const plan = buildPlan('A', focus);
+    const str = plan.find(S => S.type === 'strength'), car = plan.find(S => S.cardio);
+    setText($('hlA'), LIBRARY.A.highlights);
+    setHTML($('iconsA'), str.exercises.map(e => '<span' + (e.extra ? ' class="xi"' : '') + '>' + ART[e.img] + '</span>').join(''));
+    setText($('splitA'), 'STRENGTH ' + str.duration / 60 + ' MIN · BIKE ' + car.duration / 60 + ' MIN');
     const last = history[history.length - 1];
     if (last) {
       const d = new Date(last.at);
       const date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
-      setText(el.lastDone, 'LAST: WORKOUT ' + last.w + ' · ' + date + ' · ' + mmss(last.total));
+      setText(el.lastDone, 'LAST WORKOUT: ' + date + ' · ' + mmss(last.total));
     } else setText(el.lastDone, '');
   }
 
@@ -1770,7 +1701,7 @@ svg { display: block; flex: none; }
     vTimed: $('vTimed'), tMeta: $('tMeta'), tLabel: $('tLabel'), tHrLabel: $('tHrLabel'), tHr: $('tHr'), tHrNum: $('tHrNum'),
     tSub: $('tSub'), tChips: $('tChips'), tStrip: $('tStrip'), tRem: $('tRem'), tGoal: $('tGoal'), tCue: $('tCue'),
     hrIn: $('hrIn'), hrVal: $('hrVal'), hrStat: $('hrStat'),
-    vPick: $('vPick'), pDone: $('pDone'), pPace: $('pPace'), tiles: $('tiles'), sBack: $('sBack'), nextPre: $('nextPre'),
+    vPick: $('vPick'), pDone: $('pDone'), pPace: $('pPace'), tiles: $('tiles'), xtiles: $('xtiles'), xlab: $('xlab'), sBack: $('sBack'), nextPre: $('nextPre'),
     vStr: $('vStr'), sPace: $('sPace'), sName: $('sName'), sNote: $('sNote'), sReps: $('sReps'), sSetRow: $('sSetRow'),
     sDots: $('sDots'), sSet: $('sSet'), sRest: $('sRest'), sRestT: $('sRestT'), sRestK: $('sRestK'),
     wVal: $('wVal'), wUnit: $('wUnit'), wLast: $('wLast'), sTip: $('sTip'),
@@ -1804,14 +1735,15 @@ svg { display: block; flex: none; }
   let tileEls = [];
   function buildTiles() {
     const S = SECS.find(X => X.type === 'strength');
-    el.tiles.innerHTML = '';
-    el.tiles.classList.toggle('c4', S.exercises.length > 6);
+    el.tiles.innerHTML = ''; el.xtiles.innerHTML = '';
+    const hasX = S.exercises.some(e => e.extra);
+    show(el.xtiles, hasX); show(el.xlab, hasX);
     tileEls = S.exercises.map((ex, i) => {
       const b = document.createElement('button');
       b.className = 'tile'; b.dataset.i = i;
       b.innerHTML = '<span class="art tico">' + (ART[ex.img] || '') + '</span><span class="tname"></span><span class="tstat"></span><span class="tchk">✓</span>';
       b.querySelector('.tname').textContent = ex.short || ex.name;
-      el.tiles.appendChild(b);
+      (ex.extra ? el.xtiles : el.tiles).appendChild(b);
       return { b: b, stat: b.querySelector('.tstat') };
     });
   }
@@ -1888,7 +1820,7 @@ svg { display: block; flex: none; }
     if (S.type === 'strength') {
       const rem = S.duration - state.str.elapsed;
       tText = rem > 0 ? mmss(up(rem)) : '+' + mmss(-rem);
-      tCls += ' small' + (rem > 0 ? '' : ' over');
+      tCls += ' small' + (state.str.ex < 0 ? ' xs' : '') + (rem > 0 ? '' : ' over');
     } else if (st === 'waiting') {
       tText = mmss(S.duration); tCls += ' dim';
     } else {
@@ -1905,6 +1837,7 @@ svg { display: block; flex: none; }
     show(el.vStr, !waiting && S.type === 'strength' && !picking);
     show(el.vPick, !waiting && picking);
     let nextPre = 'NEXT';
+    el.card.parentElement.classList.toggle('picking', !waiting && picking);
     show(el.vTimed, !waiting && S.type === 'timed');
     let peak = false, dense = false, nextText;
 
@@ -1987,8 +1920,12 @@ svg { display: block; flex: none; }
       dense = true;
       const restText = () => s.rest >= S.restReady ? 'READY WHEN\nYOU ARE' : 'REST\nTHEN SET ' + (s.set + 1);
       if (picking) {
-        const fin = S.exercises.filter((e, i) => doneOf(i) >= e.sets).length;
-        setText(el.pDone, fin + ' OF ' + S.exercises.length + ' DONE');
+        const mains = S.exercises.filter(e => !e.extra).length;
+        const fin = S.exercises.filter((e, i) => !e.extra && doneOf(i) >= e.sets).length;
+        const started = S.exercises.some((e, i) => doneOf(i) > 0);
+        setText(el.pDone, fin === mains ? 'MAIN DONE ✓' : started ? fin + ' OF ' + mains + ' DONE' : 'TAP A FREE MACHINE');
+        setText(el.xlab, fin === mains ? 'EXTRAS · OR TAP NEXT FOR THE BIKE' : 'EXTRAS · IF YOU HAVE TIME');
+        el.pDone.classList.toggle('alldone', fin === mains);
         // While resting, the header shows the rest countdown instead of the pace
         const ready = s.rest >= S.restReady;
         setText(el.pPace, s.resting ? (ready ? 'READY · ' : 'REST ') + mss(up(S.rest - s.rest)) : pace);
@@ -2000,7 +1937,7 @@ svg { display: block; flex: none; }
           if (t.b.className !== cls) t.b.className = cls;
           setText(t.stat, d >= e.sets ? 'DONE' : d > 0 ? d + ' / ' + e.sets + ' SETS' : e.sets + ' × ' + e.reps);
         });
-        nextPre = ''; nextText = fin === S.exercises.length ? (SECS[state.sec + 1].short || SECS[state.sec + 1].title) : 'TAP ANY FREE MACHINE';
+        nextPre = ''; nextText = fin === mains ? 'EXTRA, OR TAP NEXT FOR BIKE' : 'TAP ANY FREE MACHINE';
       } else {
       const ex = S.exercises[s.ex];
       setText(el.sPace, pace);
@@ -2027,8 +1964,10 @@ svg { display: block; flex: none; }
       setText(el.wVal, fmtW(w));
       setText(el.wUnit, unit);
       setText(el.wLast, lw != null ? 'LAST TIME ' + fmtW(lw) + ' ' + unit : (w == null ? 'TAP + TO SET WEIGHT' : 'WEIGHT SAVED'));
-      const others = leftCount(S) - (doneOf(s.ex) < ex.sets ? 1 : 0);
-      nextText = others > 0 ? 'MACHINE LIST · ' + others + ' LEFT' : (SECS[state.sec + 1].short || SECS[state.sec + 1].title);
+      const open = doneOf(s.ex) < ex.sets;
+      const others = leftCount(S) - (!ex.extra && open ? 1 : 0);
+      const xOthers = extrasLeft(S) - (ex.extra && open ? 1 : 0);
+      nextText = others > 0 ? 'MACHINE LIST · ' + others + ' LEFT' : (xOthers > 0 && S.duration - s.elapsed > 120 ? 'MACHINE LIST · EXTRAS' : (SECS[state.sec + 1].short || SECS[state.sec + 1].title));
       }
     }
     el.card.classList.toggle('peak', peak && st !== 'idle');
@@ -2118,7 +2057,6 @@ svg { display: block; flex: none; }
     focus = b.dataset.f; store('focus', focus); renderChooser();
   });
   $('cardA').addEventListener('click', () => { unlock(); chooseWorkout('A'); });
-  $('cardB').addEventListener('click', () => { unlock(); chooseWorkout('B'); });
 
   // No scrolling, pinch-zoom or long-press menus
   document.addEventListener('touchmove', e => { if (!e.target.closest('.scroll, input[type=range]')) e.preventDefault(); }, { passive: false });
@@ -2244,7 +2182,7 @@ svg { display: block; flex: none; }
   });
 
   /* ---------- Machine list ---------- */
-  el.tiles.addEventListener('click', e => {
+  el.vPick.addEventListener('click', e => {
     const t = e.target.closest('.tile'); if (!t) return;
     unlock(); pickExercise(+t.dataset.i); afterAction();
   });
