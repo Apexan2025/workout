@@ -351,7 +351,7 @@ svg { display: block; flex: none; }
 .mgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .mgrid button { height: clamp(38px, 5.6vh, 46px); border-radius: 14px; background: var(--surface2); font-size: 14px; font-weight: 800; letter-spacing: .06em; color: var(--muted); }
 .mgrid button.on { background: var(--text); color: var(--bg); }
-.nextsong { height: 34px; padding: 0 12px; border-radius: 10px; background: var(--surface2); font-size: 13px; font-weight: 800; letter-spacing: .06em; }
+.nextsong { display: inline-flex; align-items: center; height: 34px; padding: 0 12px; border-radius: 10px; background: var(--surface2); font-size: 13px; font-weight: 800; letter-spacing: .06em; }
 .volrow { display: flex; align-items: center; gap: 12px; min-height: 44px; }
 .vlab { font-size: 20px; }
 .vpct { width: 48px; text-align: right; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; }
@@ -362,6 +362,14 @@ svg { display: block; flex: none; }
 .volrow input::-moz-range-thumb { width: 34px; height: 34px; border-radius: 50%; background: var(--text); border: 4px solid var(--bg); }
 .mnote { min-height: 36px; font-size: 13px; line-height: 1.4; color: var(--muted); text-align: center; }
 .mnote b { color: var(--text); }
+
+.mbtns { display: flex; gap: 8px; }
+.vh { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
+.mstuck {
+  position: fixed; z-index: 11; left: 50%; top: calc(env(safe-area-inset-top, 0px) + 62px); transform: translateX(-50%);
+  max-width: 92vw; padding: 12px 16px; border-radius: 14px; background: var(--warn); color: #1C1300;
+  font-size: 15px; font-weight: 800; letter-spacing: .03em; white-space: nowrap; box-shadow: 0 6px 24px rgba(0, 0, 0, .45);
+}
 
 /* Machine picker (strength) */
 .vpick { flex: 1 1 auto; min-height: 0; justify-content: flex-start; }
@@ -628,7 +636,7 @@ svg { display: block; flex: none; }
     </div>
     <div class="vlist scroll" id="vList"></div>
     <div class="vtip">Sounds robotic? On your iPhone open <b>Settings › Accessibility › Spoken Content › Voices › English</b>, download a <b>Premium</b> voice (for example Ava or Zoe), then pick it here.</div>
-    <div class="mhead"><div class="k">MUSIC</div><button class="nextsong" id="nextSong" hidden>NEXT SONG ⏭</button></div>
+    <div class="mhead"><div class="k">MUSIC</div><div class="mbtns"><label class="nextsong" for="musicFile" id="chooseSongs" hidden>CHOOSE SONGS</label><button class="nextsong" id="nextSong" hidden>NEXT SONG ⏭</button></div></div>
     <div class="mgrid" id="musicGrid">
       <button data-m="off">OFF</button><button data-m="calm">CALM</button><button data-m="lofi">LO-FI</button>
       <button data-m="groove">GROOVE</button><button data-m="drive">DRIVE</button><button data-m="energy">ENERGY</button>
@@ -636,11 +644,12 @@ svg { display: block; flex: none; }
     </div>
     <div class="volrow"><span class="vlab">🔈</span><input type="range" id="volRange" min="0" max="100" step="5" value="50" aria-label="Music volume"><span class="vpct" id="volPct">50%</span></div>
     <div class="mnote" id="musicNote"></div>
-    <input type="file" id="musicFile" accept="audio/*" multiple hidden>
+    <input type="file" id="musicFile" class="vh" accept=".mp3,.m4a,.aac,.wav,.aif,.aiff" multiple>
   </section>
 </div>
 <div id="flash"></div>
 <div id="toast"></div>
+<button class="mstuck" id="mStuck" hidden>♫ MUSIC PAUSED BY IPHONE — TAP TO RESUME</button>
 
 <script>
 (function () {
@@ -1027,7 +1036,8 @@ svg { display: block; flex: none; }
     if (soundOpen) renderVoices();
   }
   if (synth) { loadVoices(); try { synth.addEventListener('voiceschanged', loadVoices); } catch (e) { synth.onvoiceschanged = loadVoices; } }
-  let speakTimer = null;
+  let speakTimer = null, speakUntil = 0;   // our own estimate of when the coach stops talking (iPhone's own report can get stuck)
+  const coachTalking = () => Date.now() < speakUntil;
   function speak(text, force) {
     if ((!voiceOn && !force) || !synth || !text) return;
     clearTimeout(speakTimer);
@@ -1037,9 +1047,11 @@ svg { display: block; flex: none; }
         u.lang = enVoice ? enVoice.lang : 'en-US'; u.rate = sound.rate; u.pitch = 1; u.volume = 1;
         if (enVoice) u.voice = enVoice;
         u.onstart = () => Music.duck(true);
-        u.onend = u.onerror = () => { Music.duck(false); audio(); };
+        u.onend = u.onerror = () => { speakUntil = 0; Music.duck(false); audio(); setTimeout(() => Music.keepAlive(false), 250); };
         synth.speak(u);
-        setTimeout(() => { if (!synth.speaking) Music.duck(false); }, 8000);
+        const est = Math.min(9000, 1500 + text.length * 90 / sound.rate);
+        speakUntil = Date.now() + est;
+        setTimeout(() => Music.duck(false), est);   // iPhone sometimes never says "finished"
       } catch (e) {}
     };
     if (synth.speaking || synth.pending) { try { synth.cancel(); } catch (e) {} speakTimer = setTimeout(go, 90); }
@@ -1050,7 +1062,7 @@ svg { display: block; flex: none; }
   let unlocked = false;
   function unlock() {
     audio();
-    Music.prime();
+    Music.kick();
     if (!unlocked && synth) {
       unlocked = true;
       try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; synth.speak(u); } catch (e) {}
@@ -1063,7 +1075,8 @@ svg { display: block; flex: none; }
   const Music = (function () {
     let ctx = null, bus = null, duckG = null, src = null;
     let cur = 'off', want = 'off', level = 1, switchT = null, token = 0;
-    let fileEl = null, fileName = '', primed = false, lastFileTry = 0, files = [], fileIdx = 0;
+    let fileEl = null, fileName = '', primed = false, lastFileTry = 0, files = [], fileIdx = 0, badRun = 0;
+    let starting = false, lastStart = 0, lastResume = 0, stuckSince = 0;
     const loops = {};
     const BASE = 0.34;
     const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
@@ -1207,13 +1220,16 @@ svg { display: block; flex: none; }
     function playFile() { if (!fileEl) return; fileEl.muted = false; const p = fileEl.play(); if (p && p.catch) p.catch(() => {}); }
     function start() {
       const my = ++token;
+      lastStart = Date.now();
       if (cur === 'mine') { playFile(); fadeTo(BASE * level, 1.2); return; }
+      starting = true;
       render(cur).then(buf => {
+        starting = false;
         if (my !== token) return;
         stopSrc();
         src = ctx.createBufferSource(); src.buffer = buf; src.loop = true; src.connect(bus); src.start();
         fadeTo(BASE * level, 1.2);
-      }).catch(() => {});
+      }).catch(() => { starting = false; });
     }
     function stop() { token++; stopSrc(); if (fileEl) fileEl.pause(); }
     // Fade to a new style ('off' | 'calm' | 'lofi' | 'energy' | 'mine') at volume lvl
@@ -1227,14 +1243,41 @@ svg { display: block; flex: none; }
       clearTimeout(switchT);
       switchT = setTimeout(() => { stop(); cur = want; if (cur !== 'off') start(); }, 480);
     }
-    // iPhone can "interrupt" web audio (for example while the voice speaks) — keep switching it back on
-    function keepAlive() {
-      if (!ctx || want === 'off') return;
-      if (ctx.state !== 'running' && ctx.state !== 'closed') { try { const p = ctx.resume(); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
-      if (cur === 'mine' && fileEl && fileEl.paused && Date.now() - lastFileTry > 2000) { lastFileTry = Date.now(); playFile(); }
+    // iPhone can put web audio on hold (screen lock, leaving the app, other sound) and the
+    // voice pauses song players — keep switching the music back on. Runs several times a second.
+    function keepAlive(speaking) {
+      if (!ctx || want === 'off') { stuckSince = 0; return; }
+      const now = Date.now();
+      let ok = ctx.state === 'running';
+      if (!ok && ctx.state !== 'closed' && now - lastResume > 400) {
+        lastResume = now;
+        try { const p = ctx.resume(); if (p && p.catch) p.catch(() => {}); } catch (e) {}
+      }
+      if (cur === 'mine' && fileEl) {
+        if (fileEl.paused && fileEl.src) {
+          ok = false;
+          if (!speaking && now - lastFileTry > 800) { lastFileTry = now; playFile(); }   // wait until the coach has finished
+        }
+      } else if (cur !== 'off' && cur === want && !src && !starting && now - lastStart > 3000) start();   // a start that failed: try again
+      stuckSince = ok || speaking ? 0 : (stuckSince || now);
+    }
+    // Back in the app: a quick suspend + resume brings stuck audio back on some iPhones
+    function wake() {
+      if (!ctx || ctx.state === 'running' || ctx.state === 'closed') return;
+      try { ctx.suspend().then(() => ctx.resume()).catch(() => {}); } catch (e) {}
+    }
+    // Inside a tap: iPhone always allows sound to (re)start here
+    function kick() {
+      if (ctx && ctx.state !== 'running' && ctx.state !== 'closed') { try { const p = ctx.resume(); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
+      if (cur === 'mine' && fileEl && fileEl.paused && fileEl.src) playFile(); else prime();
     }
     // Quieter while the coach talks
     function duck(on) { if (duckG) duckG.gain.setTargetAtTime(on ? 0.3 : 1, ctx.currentTime, on ? 0.05 : 0.35); }
+    // A song file the phone can't play: say so and move on
+    function badFile() {
+      toast('CAN’T PLAY “' + fileName.toUpperCase() + '” — TRY AN MP3 OR M4A', 3000);
+      if (files.length > 1 && ++badRun < files.length) nextFile();
+    }
     // Your own songs: played in order, then from the start again
     function useFiles(list) {
       if (!init() || !list || !list.length) return;
@@ -1242,6 +1285,8 @@ svg { display: block; flex: none; }
         fileEl = new Audio(); fileEl.setAttribute('playsinline', '');
         try { ctx.createMediaElementSource(fileEl).connect(bus); } catch (e) {}
         fileEl.addEventListener('ended', () => nextFile());
+        fileEl.addEventListener('error', () => { if (fileEl.src) badFile(); });
+        fileEl.addEventListener('playing', () => { badRun = 0; });
       }
       files = list; fileIdx = 0; loadFile();
     }
@@ -1261,7 +1306,8 @@ svg { display: block; flex: none; }
       if (p && p.then) p.then(done, () => { primed = false; fileEl.muted = false; }); else done();
     }
     const prepare = name => { if (STYLES[name] && init()) render(name).catch(() => {}); };
-    return { set, duck, useFiles, nextFile, prime, keepAlive, prepare, hasFile: () => files.length > 0, fileName: () => fileName,
+    return { set, duck, useFiles, nextFile, prime, kick, wake, keepAlive, prepare, hasFile: () => files.length > 0, fileName: () => fileName,
+      get stuck() { return !!stuckSince && Date.now() - stuckSince > 1500; },
       songInfo: () => files.length ? (fileIdx + 1) + ' of ' + files.length : '',
       get style() { return cur; }, get state() { return ctx ? ctx.state : 'none'; }, get playing() { return !!src || (cur === 'mine' && fileEl && !fileEl.paused); } };
   })();
@@ -1278,7 +1324,12 @@ svg { display: block; flex: none; }
     put(v) { return this.db().then(db => new Promise((res, rej) => { const tx = db.transaction('files', 'readwrite'); tx.objectStore('files').put(v, 'music'); tx.oncomplete = res; tx.onerror = () => rej(tx.error); })); },
     get() { return this.db().then(db => new Promise((res, rej) => { const q = db.transaction('files').objectStore('files').get('music'); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); })); },
   };
-  if (window.indexedDB) SongStore.get().then(r => { const list = Array.isArray(r) ? r : (r && r.blob ? [r] : []); if (list.length) Music.useFiles(list); }).catch(() => {});
+  if (window.indexedDB) SongStore.get().then(r => {
+    const rows = Array.isArray(r) ? r : (r ? [r] : []);
+    const list = rows.map(x => x && x.data ? { blob: new Blob([x.data], { type: x.type || 'audio/mpeg' }), name: x.name }
+                             : x && x.blob ? { blob: x.blob, name: x.name } : null).filter(Boolean);
+    if (list.length) Music.useFiles(list);
+  }).catch(() => {});
 
   // Let beeps and voice mix with your own music app when the built-in music is off
   function setSession() { try { if (navigator.audioSession) navigator.audioSession.type = sound.music === 'off' ? 'ambient' : 'playback'; } catch (e) {} }
@@ -1460,8 +1511,9 @@ svg { display: block; flex: none; }
     if (state.status === 'running' && dt > 0) advance(dt * SPEED, dt < 2);
     render();
     syncMusic();
-    Music.keepAlive();
-    if (soundOpen && (sound.music === 'mix' || sound.music === 'mine') && now - lastNote > 1000) { lastNote = now; renderSound(); }
+    Music.keepAlive(coachTalking());
+    show(el.mStuck, Music.stuck && (view === 'workout' || soundOpen));
+    if (soundOpen && sound.music !== 'off' && now - lastNote > 1000) { lastNote = now; renderSound(); }
     if (isActive() && now - lastSave > 1000) save();
   }
 
@@ -1713,7 +1765,7 @@ svg { display: block; flex: none; }
     chooser: $('chooser'), focusSeg: $('focusSeg'), focusNote: $('focusNote'), lastDone: $('lastDone'),
     tArt: $('tArt'), sArt: $('sArt'), rArt: $('rArt'),
     howto: $('howto'), hArt: $('hArt'), hName: $('hName'), hNote: $('hNote'), hTips: $('hTips'),
-    sound: $('sound'), vList: $('vList'), voiceSeg: $('voiceSeg'), rateSeg: $('rateSeg'), volRange: $('volRange'), volPct: $('volPct'), nextSong: $('nextSong'), musicGrid: $('musicGrid'), musicNote: $('musicNote'),
+    sound: $('sound'), vList: $('vList'), voiceSeg: $('voiceSeg'), rateSeg: $('rateSeg'), volRange: $('volRange'), chooseSongs: $('chooseSongs'), mStuck: $('mStuck'), volPct: $('volPct'), nextSong: $('nextSong'), musicGrid: $('musicGrid'), musicNote: $('musicNote'),
     pad: $('pad'), padTitle: $('padTitle'), padSub: $('padSub'), padDisp: $('padDisp'), padVal: $('padVal'), padUnit: $('padUnit'), keyDot: $('keyDot'),
   };
 
@@ -1870,7 +1922,7 @@ svg { display: block; flex: none; }
       if (step.sides) sub = stepPos < step.dur / 2 ? 'FIRST SIDE · SWITCH HALFWAY' : 'SECOND SIDE';
       show(el.tSub, !!sub); setText(el.tSub, sub);
       show(el.tChips, !!step.chip);
-      show(el.tArt, !!S.showArt && !step.hr);
+      show(el.tArt, !!S.showArt && !step.hr && step.label.length <= 22);   // no room next to a 3-line label
       if (S.showArt) setHTML(el.tArt, ART[S.img] || '');
       chipEls.forEach(c => {
         const ci = +c.dataset.i;
@@ -2065,7 +2117,7 @@ svg { display: block; flex: none; }
   document.addEventListener('pointerdown', () => { unlock(); keepAwake(); }, true);
 
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') { tick(); keepAwake(); }
+    if (document.visibilityState === 'visible') { Music.wake(); tick(); keepAwake(); }
     else save();
   });
   window.addEventListener('pagehide', save);
@@ -2118,10 +2170,14 @@ svg { display: block; flex: none; }
     renderVol();
     mark(el.musicGrid, 'm', sound.music);
     let note = MUSIC_NOTES[sound.music] || '';
-    if (sound.music === 'mine') note = Music.hasFile() ? '♫ <b>' + Music.fileName().replace(/[<>&]/g, '') + '</b> · song ' + Music.songInfo() + ' · tap MY MUSIC again to choose new songs' : 'Choose one or more song files saved on your iPhone — they play in turn.';
+    if (sound.music === 'mine') note = Music.hasFile()
+      ? '♫ <b>' + Music.fileName().replace(/[<>&]/g, '') + '</b> · song ' + Music.songInfo() + ' · tap CHOOSE SONGS to pick others'
+      : 'Tap <b>CHOOSE SONGS</b> and pick MP3 or M4A files from the <b>Files</b> app. Songs inside the Apple Music app can’t be used.';
+    if (Music.stuck) note = '<b>⚠ Music paused by iPhone — tap anywhere to resume.</b> ' + note;
     if (sound.music === 'mix' && TRACK_NAMES[Music.style]) note = 'Now playing <b>' + TRACK_NAMES[Music.style] + '</b> · ' + note;
     setHTML(el.musicNote, note);
     show(el.nextSong, sound.music === 'mix' || (sound.music === 'mine' && Music.hasFile()));
+    show(el.chooseSongs, sound.music === 'mine');
     markVoices();
   }
   function openSound() {
@@ -2168,17 +2224,24 @@ svg { display: block; flex: none; }
     const b = e.target.closest('button'); if (!b) return;
     unlock();
     const m = b.dataset.m;
-    if (m === 'mine' && (!Music.hasFile() || sound.music === 'mine')) { $('musicFile').click(); if (!Music.hasFile()) return; }
+    if (m === 'mine' && !Music.hasFile()) $('musicFile').click();   // CHOOSE SONGS also appears, in case the phone ignores this
     sound.music = m; saveSound(); setSession(); renderSound(); syncMusic();
   });
-  $('musicFile').addEventListener('change', e => {
-    const list = [...(e.target.files || [])].map(f => ({ blob: f, name: f.name }));
+  $('musicFile').addEventListener('change', async e => {
+    const picked = [...(e.target.files || [])];
     e.target.value = '';
-    if (!list.length) return;
-    Music.useFiles(list);
-    toast(list.length === 1 ? '1 SONG READY' : list.length + ' SONGS READY — THEY PLAY IN TURN', 2000);
-    if (window.indexedDB) SongStore.put(list).catch(() => toast('SONGS WILL PLAY THIS TIME ONLY', 2200));
+    if (!picked.length) return;
+    const songs = picked.filter(f => /\.(mp3|m4a|aac|wav|aiff?)$/i.test(f.name) || /^audio\//.test(f.type));
+    if (!songs.length) { toast('PLEASE PICK MP3 OR M4A SONG FILES', 2500); return; }
+    const title = f => f.name.replace(/\.[^.]+$/, '');
+    Music.useFiles(songs.map(f => ({ blob: f, name: title(f) })));
     sound.music = 'mine'; saveSound(); setSession(); renderSound(); syncMusic();
+    toast(songs.length === 1 ? '1 SONG READY' : songs.length + ' SONGS READY — THEY PLAY IN TURN', 2000);
+    if (!window.indexedDB) return;
+    try {
+      const rows = await Promise.all(songs.map(async f => ({ name: title(f), type: f.type || 'audio/mpeg', data: await f.arrayBuffer() })));
+      await SongStore.put(rows);
+    } catch (err) { toast('SONGS WILL PLAY THIS TIME ONLY — NOT ENOUGH SPACE TO SAVE', 2600); }
   });
 
   /* ---------- Machine list ---------- */
